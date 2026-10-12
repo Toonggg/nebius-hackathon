@@ -1,0 +1,34 @@
+{
+ "ranking": [
+  [
+   "Rue François Miron",
+   24
+  ],
+  [
+   "Rue de Brosse",
+   24
+  ],
+  [
+   "Rue de Fourcy",
+   24
+  ],
+  [
+   "Rue des Nonnains d'Hyères",
+   24
+  ]
+ ],
+ "F1": {
+  "street": "Rue François Miron",
+  "edges": [
+   "511451176#0"
+  ],
+  "detour_paths": 24
+ },
+ "F2": {
+  "street": "Rue de Brosse",
+  "edges": [
+   "64972827#0"
+  ],
+  "detour_paths": 24
+ }
+}

@@ -1,0 +1,3 @@
+eclipse-sumo==1.28.0   # SUMO binaries + tools (Apple Silicon, Linux, Windows; no Intel Mac wheel)
+sumolib==1.28.0
+matplotlib>=3.8

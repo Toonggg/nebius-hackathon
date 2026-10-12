@@ -1,0 +1,1491 @@
+{
+ "Avenue Victoria": {
+  "edges": [
+   "14155058#0",
+   "169128627#0",
+   "41739091#0",
+   "467280505",
+   "517156353#0",
+   "53585865#0"
+  ],
+  "road_class": "residential/tertiary",
+  "residential": false,
+  "judged": true,
+  "length_m": 305.8
+ },
+ "Boulevard Henri IV": {
+  "edges": [
+   "390294215#0",
+   "390294217#0"
+  ],
+  "road_class": "primary",
+  "residential": false,
+  "judged": true,
+  "length_m": 206.9
+ },
+ "Boulevard de Sébastopol": {
+  "edges": [
+   "193751718#0",
+   "22715945#0",
+   "674945573#0",
+   "754883372"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 463.8
+ },
+ "Boulevard du Palais": {
+  "edges": [
+   "865084962#0"
+  ],
+  "road_class": "primary",
+  "residential": false,
+  "judged": true,
+  "length_m": 99.3
+ },
+ "Entrée Rue des Halles (Voie A2)": {
+  "edges": [
+   "159488127"
+  ],
+  "road_class": "unclassified",
+  "residential": true,
+  "judged": true,
+  "length_m": 54.4
+ },
+ "Passage Walter Benjamin": {
+  "edges": [
+   "83262392#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 20.3
+ },
+ "Petit-Pont": {
+  "edges": [
+   "20104606"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 0.1
+ },
+ "Petit-Pont - Cardinal Lustiger": {
+  "edges": [
+   "744835294"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 39.2
+ },
+ "Place Shimon Peres": {
+  "edges": [
+   "1356985634"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 11.1
+ },
+ "Place de Thorigny": {
+  "edges": [
+   "4574398"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 31.2
+ },
+ "Place de l'Hôtel de Ville": {
+  "edges": [
+   "4476805#0"
+  ],
+  "road_class": "tertiary",
+  "residential": false,
+  "judged": true,
+  "length_m": 70.4
+ },
+ "Place du Châtelet": {
+  "edges": [
+   "4039366",
+   "674945572#0"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 37.5
+ },
+ "Place du Petit Pont": {
+  "edges": [
+   "23738286#0"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 21.6
+ },
+ "Pont Louis-Philippe": {
+  "edges": [
+   "22972089#0",
+   "22972090",
+   "286546"
+  ],
+  "road_class": "living_street/residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 97.9
+ },
+ "Pont Marie": {
+  "edges": [
+   "-17249298",
+   "-286551#1",
+   "17249305",
+   "286551#0"
+  ],
+  "road_class": "tertiary",
+  "residential": false,
+  "judged": true,
+  "length_m": 183.5
+ },
+ "Pont Notre-Dame": {
+  "edges": [
+   "4039655"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 104.8
+ },
+ "Pont d'Arcole": {
+  "edges": [
+   "-474063681",
+   "22973459#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 172.6
+ },
+ "Pont de l'Archevêché": {
+  "edges": [
+   "20444537"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 68.5
+ },
+ "Quai Saint-Michel": {
+  "edges": [
+   "4040038#0"
+  ],
+  "road_class": "primary",
+  "residential": false,
+  "judged": true,
+  "length_m": 190.3
+ },
+ "Quai aux Fleurs": {
+  "edges": [
+   "1373641710#0",
+   "21816598#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 285.9
+ },
+ "Quai d'Anjou": {
+  "edges": [
+   "33189941#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 321.6
+ },
+ "Quai d'Orléans": {
+  "edges": [
+   "55407694#0",
+   "55407694#1",
+   "55407694#3",
+   "55407694#5"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 247.1
+ },
+ "Quai de Bourbon": {
+  "edges": [
+   "1175878061#0",
+   "1175878068",
+   "286537#0",
+   "286537#1",
+   "286537#4"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 349.7
+ },
+ "Quai de Gesvres": {
+  "edges": [
+   "284302748#0",
+   "4039626",
+   "517156355#0",
+   "60184375#1"
+  ],
+  "road_class": "primary",
+  "residential": false,
+  "judged": true,
+  "length_m": 232.4
+ },
+ "Quai de Montebello": {
+  "edges": [
+   "4039875#0",
+   "4039875#3",
+   "4039875#5",
+   "678644176"
+  ],
+  "road_class": "primary",
+  "residential": false,
+  "judged": true,
+  "length_m": 281.3
+ },
+ "Quai de l'Archevêché": {
+  "edges": [
+   "4039284"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 96.5
+ },
+ "Quai de l'Hôtel de Ville": {
+  "edges": [
+   "-162384238#2",
+   "-521338709#0",
+   "-521338709#3",
+   "-563926537#1",
+   "-678522920",
+   "-808505041",
+   "162384238#0",
+   "516413082",
+   "516413083#0",
+   "516413416",
+   "517156285#0",
+   "521338709#0",
+   "521338709#1",
+   "563926537#0",
+   "678522920",
+   "808505041"
+  ],
+  "road_class": "primary",
+  "residential": false,
+  "judged": true,
+  "length_m": 955.9
+ },
+ "Quai de la Corse - Pasquale Paoli": {
+  "edges": [
+   "53604499#0",
+   "64609507#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 277.2
+ },
+ "Quai de la Mégisserie": {
+  "edges": [
+   "1153389179",
+   "68881721"
+  ],
+  "road_class": "primary",
+  "residential": false,
+  "judged": true,
+  "length_m": 94.8
+ },
+ "Quai des Célestins": {
+  "edges": [
+   "-162384239#0",
+   "-162384239#3",
+   "-4039699#3",
+   "-563926533",
+   "162384239#0",
+   "162384239#1",
+   "4039699#0",
+   "4294233#0",
+   "4294233#4",
+   "56185430#0",
+   "56185430#1",
+   "563926533"
+  ],
+  "road_class": "primary",
+  "residential": false,
+  "judged": true,
+  "length_m": 753.6
+ },
+ "Quai du Marché Neuf - Maurice Grimaud": {
+  "edges": [
+   "53570786#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 175.3
+ },
+ "Rue Adolphe Adam": {
+  "edges": [
+   "53585863#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 48.5
+ },
+ "Rue Aubriot": {
+  "edges": [
+   "4574400#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 90.2
+ },
+ "Rue Barbette": {
+  "edges": [
+   "4574319#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 162.3
+ },
+ "Rue Beaubourg": {
+  "edges": [
+   "1105156310#0",
+   "1105156310#2"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 92.3
+ },
+ "Rue Beautreillis": {
+  "edges": [
+   "4527578#0",
+   "4527578#3",
+   "733971932#0"
+  ],
+  "road_class": "living_street/residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 221.6
+ },
+ "Rue Boutarel": {
+  "edges": [
+   "286547#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 57.5
+ },
+ "Rue Budé": {
+  "edges": [
+   "286548#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 81.9
+ },
+ "Rue Chanoinesse": {
+  "edges": [
+   "1015493288#0",
+   "1015493290#0",
+   "53613248#0",
+   "53613253#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 177.7
+ },
+ "Rue Charlemagne": {
+  "edges": [
+   "15893871#0",
+   "847108036#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 84.0
+ },
+ "Rue Charles V": {
+  "edges": [
+   "4527576#0",
+   "64963501#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 177.2
+ },
+ "Rue Charlot": {
+  "edges": [
+   "60208997#0",
+   "60208997#3"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 167.0
+ },
+ "Rue Debelleyme": {
+  "edges": [
+   "28681325"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 104.2
+ },
+ "Rue Elzévir": {
+  "edges": [
+   "4574428#0",
+   "4574428#3"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 155.7
+ },
+ "Rue Ferdinand Duval": {
+  "edges": [
+   "1206566927",
+   "4574420"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 104.5
+ },
+ "Rue François Miron": {
+  "edges": [
+   "22973291#0",
+   "22973291#5",
+   "34322512#0",
+   "511451176#0"
+  ],
+  "road_class": "living_street/residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 361.5
+ },
+ "Rue Geoffroy l'Angevin": {
+  "edges": [
+   "-1101026344#2",
+   "1101026344#0",
+   "4574310#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 152.6
+ },
+ "Rue Geoffroy l'Asnier": {
+  "edges": [
+   "-23950624#2",
+   "23950624#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 27.6
+ },
+ "Rue Jean Lantier": {
+  "edges": [
+   "53578244#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 86.1
+ },
+ "Rue Jean du Bellay": {
+  "edges": [
+   "-286543#2",
+   "286538",
+   "286543#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 116.3
+ },
+ "Rue Jules Cousin": {
+  "edges": [
+   "56199245#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 49.4
+ },
+ "Rue Lagrange": {
+  "edges": [
+   "1527937712#0",
+   "34322389",
+   "668878770#0"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 91.3
+ },
+ "Rue Madame de Sévigné": {
+  "edges": [
+   "4574348#0",
+   "60208632#0",
+   "64972826#0",
+   "64972826#3"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 347.7
+ },
+ "Rue Malher": {
+  "edges": [
+   "4574364#0",
+   "4574364#2",
+   "4574364#4"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 129.0
+ },
+ "Rue Massillon": {
+  "edges": [
+   "53613250#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 54.6
+ },
+ "Rue Michel Blanc": {
+  "edges": [
+   "1214328611#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 47.1
+ },
+ "Rue Milo Adoner": {
+  "edges": [
+   "4574351#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 47.4
+ },
+ "Rue Neuve Saint-Pierre": {
+  "edges": [
+   "698892815"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 149.2
+ },
+ "Rue Pavée": {
+  "edges": [
+   "306392296#0",
+   "390298283",
+   "466690491#0",
+   "576429482",
+   "576429485"
+  ],
+  "road_class": "living_street/residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 132.5
+ },
+ "Rue Payenne": {
+  "edges": [
+   "1199592042#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 168.1
+ },
+ "Rue Pecquay": {
+  "edges": [
+   "55531099#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 85.2
+ },
+ "Rue Pernelle": {
+  "edges": [
+   "54848441#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 154.9
+ },
+ "Rue Pierre Seel": {
+  "edges": [
+   "306392295#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 17.5
+ },
+ "Rue Rambuteau": {
+  "edges": [
+   "18517723#0",
+   "18517723#5",
+   "18517723#8"
+  ],
+  "road_class": "tertiary",
+  "residential": false,
+  "judged": true,
+  "length_m": 244.2
+ },
+ "Rue Saint-Antoine": {
+  "edges": [
+   "-55338728#5",
+   "34678852#0",
+   "55338728#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 356.5
+ },
+ "Rue Saint-Bon": {
+  "edges": [
+   "22674359#0",
+   "627023264"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 54.5
+ },
+ "Rue Saint-Denis": {
+  "edges": [
+   "196820524#0",
+   "499783624",
+   "600969582#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 68.9
+ },
+ "Rue Saint-Jacques": {
+  "edges": [
+   "698217134"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 87.7
+ },
+ "Rue Saint-Louis en l'Île": {
+  "edges": [
+   "286541#0",
+   "286541#2",
+   "286541#4",
+   "286541#6"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 206.1
+ },
+ "Rue Saint-Martin": {
+  "edges": [
+   "1306002917",
+   "4040099#0"
+  ],
+  "road_class": "residential/secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 123.1
+ },
+ "Rue Saint-Paul": {
+  "edges": [
+   "1030027032",
+   "186261809#0",
+   "186261809#3",
+   "186261809#5",
+   "186261809#8",
+   "4527572",
+   "64972828#0"
+  ],
+  "road_class": "tertiary",
+  "residential": false,
+  "judged": true,
+  "length_m": 234.6
+ },
+ "Rue Saint-Séverin": {
+  "edges": [
+   "20104663#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 66.7
+ },
+ "Rue Sainte-Anastase": {
+  "edges": [
+   "4574350#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 116.2
+ },
+ "Rue Sainte-Croix de la Bretonnerie": {
+  "edges": [
+   "20859608#0",
+   "20859608#2",
+   "34684208#0",
+   "34684208#4",
+   "34684208#6",
+   "34684208#7"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 263.5
+ },
+ "Rue Simon Le Franc": {
+  "edges": [
+   "15894279#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 98.2
+ },
+ "Rue Vieille du Temple": {
+  "edges": [
+   "28681308#0",
+   "28681308#2",
+   "28681308#4",
+   "60208514#0",
+   "60208514#10",
+   "60208514#4",
+   "805421195#0",
+   "999225052#0",
+   "999225052#4"
+  ],
+  "road_class": "living_street/residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 665.4
+ },
+ "Rue d'Arcole": {
+  "edges": [
+   "-45518911#1",
+   "-845612897#1",
+   "45518911#0",
+   "845612897#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 313.9
+ },
+ "Rue d'Ormesson": {
+  "edges": [
+   "20277845#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 95.5
+ },
+ "Rue de Braque": {
+  "edges": [
+   "4574311#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 117.2
+ },
+ "Rue de Brosse": {
+  "edges": [
+   "17249126#0",
+   "64972827#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 96.4
+ },
+ "Rue de Fourcy": {
+  "edges": [
+   "390298285#0",
+   "4527567#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 112.1
+ },
+ "Rue de Jarente": {
+  "edges": [
+   "4574308#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 96.0
+ },
+ "Rue de Jouy": {
+  "edges": [
+   "15893381#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 130.4
+ },
+ "Rue de Lobau": {
+  "edges": [
+   "-22973383#1",
+   "-83268801#8",
+   "1286255016",
+   "1286263232",
+   "22973383#0",
+   "361292435#0",
+   "516413084"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 349.5
+ },
+ "Rue de Rivoli": {
+  "edges": [
+   "-210062186",
+   "1463069984#0",
+   "173292034#0",
+   "173292034#1",
+   "192222115#0",
+   "192222115#4",
+   "193100626#0",
+   "193751719#0",
+   "210062186",
+   "390298286#0",
+   "390298287#0",
+   "390298287#2",
+   "390298290#0",
+   "517156281#0",
+   "55151925#0",
+   "55151925#6",
+   "569948204",
+   "569948205#0",
+   "569948205#3"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 1085.4
+ },
+ "Rue de Saintonge": {
+  "edges": [
+   "4574395#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 110.0
+ },
+ "Rue de Thorigny": {
+  "edges": [
+   "4574408#0",
+   "4574408#2",
+   "4574408#3"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 92.9
+ },
+ "Rue de Turenne": {
+  "edges": [
+   "24036981#0",
+   "24036981#2",
+   "847108035#0"
+  ],
+  "road_class": "tertiary",
+  "residential": false,
+  "judged": true,
+  "length_m": 196.5
+ },
+ "Rue de l'Avé Maria": {
+  "edges": [
+   "4527569#0",
+   "4527569#3"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 109.1
+ },
+ "Rue de l'Hôtel Colbert": {
+  "edges": [
+   "1204309385",
+   "4221397#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 87.7
+ },
+ "Rue de l'Hôtel de Ville": {
+  "edges": [
+   "1088104701#0",
+   "1088104701#2",
+   "4527563#0"
+  ],
+  "road_class": "living_street/residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 258.9
+ },
+ "Rue de la Bûcherie": {
+  "edges": [
+   "1015556783#0",
+   "4221401#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 104.9
+ },
+ "Rue de la Cité": {
+  "edges": [
+   "1411187697",
+   "4039550",
+   "4039813"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 240.8
+ },
+ "Rue de la Colombe": {
+  "edges": [
+   "1015493289#0",
+   "53657931#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 64.4
+ },
+ "Rue de la Coutellerie": {
+  "edges": [
+   "1355349305"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 87.6
+ },
+ "Rue de la Huchette": {
+  "edges": [
+   "1280700709#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 111.0
+ },
+ "Rue de la Perle": {
+  "edges": [
+   "1369390821"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 125.5
+ },
+ "Rue de la Tacherie": {
+  "edges": [
+   "4261466#0",
+   "627023269"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 57.0
+ },
+ "Rue de la Verrerie": {
+  "edges": [
+   "1153389326#0",
+   "22674368#0",
+   "4574394#0",
+   "55477322#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 281.7
+ },
+ "Rue des Archives": {
+  "edges": [
+   "1239133947#0",
+   "1286204925#0",
+   "172312427#0",
+   "22940894#0",
+   "22940894#2",
+   "22940894#4",
+   "34322497#0",
+   "34322497#2",
+   "34322497#4"
+  ],
+  "road_class": "living_street/residential/tertiary",
+  "residential": false,
+  "judged": true,
+  "length_m": 662.7
+ },
+ "Rue des Blancs-Manteaux": {
+  "edges": [
+   "4574356#0",
+   "4574356#2",
+   "4574356#4",
+   "466690494#0",
+   "466690494#3"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 281.0
+ },
+ "Rue des Chantres": {
+  "edges": [
+   "53657388#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 47.6
+ },
+ "Rue des Deux Boules": {
+  "edges": [
+   "53578231#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 90.7
+ },
+ "Rue des Deux Ponts": {
+  "edges": [
+   "286549#0",
+   "390298292#0"
+  ],
+  "road_class": "tertiary",
+  "residential": false,
+  "judged": true,
+  "length_m": 148.4
+ },
+ "Rue des Déchargeurs": {
+  "edges": [
+   "53672215#0",
+   "53672215#2"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 77.2
+ },
+ "Rue des Francs Bourgeois": {
+  "edges": [
+   "-390298282#2",
+   "390298282#0",
+   "4574429#0",
+   "4574429#12",
+   "4574429#5",
+   "4574429#8",
+   "4574429#9"
+  ],
+  "road_class": "tertiary",
+  "residential": false,
+  "judged": true,
+  "length_m": 722.7
+ },
+ "Rue des Guillemites": {
+  "edges": [
+   "55848912#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 87.8
+ },
+ "Rue des Halles": {
+  "edges": [
+   "173292041#0",
+   "32862479#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 150.4
+ },
+ "Rue des Hospitalières-Saint-Gervais": {
+  "edges": [
+   "465927031#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 29.8
+ },
+ "Rue des Jardins Saint-Paul": {
+  "edges": [
+   "19877535#0",
+   "698892811"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 157.0
+ },
+ "Rue des Lavandières Sainte-Opportune": {
+  "edges": [
+   "352839560#0",
+   "352839560#3",
+   "480447824#0",
+   "58421552#0",
+   "58421552#2",
+   "754883369"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 105.9
+ },
+ "Rue des Lions Saint-Paul": {
+  "edges": [
+   "4527577#0",
+   "4527577#2"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 164.1
+ },
+ "Rue des Mauvais Garçons": {
+  "edges": [
+   "242287889#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 34.2
+ },
+ "Rue des Nonnains d'Hyères": {
+  "edges": [
+   "20436427#0",
+   "995864599#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 125.5
+ },
+ "Rue des Quatre Fils": {
+  "edges": [
+   "1149186136#0",
+   "20997884#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 211.8
+ },
+ "Rue des Rosiers": {
+  "edges": [
+   "23071686#0",
+   "576429484#1",
+   "576429487#0",
+   "995241575"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 115.8
+ },
+ "Rue des Ursins": {
+  "edges": [
+   "53657331#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 125.9
+ },
+ "Rue des Écouffes": {
+  "edges": [
+   "1531761049",
+   "390298295",
+   "4574379"
+  ],
+  "road_class": "living_street/residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 134.6
+ },
+ "Rue du Bourg Tibourg": {
+  "edges": [
+   "20859610#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 132.6
+ },
+ "Rue du Cloître Notre-Dame": {
+  "edges": [
+   "668879534#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 71.3
+ },
+ "Rue du Cloître Saint-Merri": {
+  "edges": [
+   "-55697132#2",
+   "55697132#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 59.0
+ },
+ "Rue du Fauconnier": {
+  "edges": [
+   "-903438150",
+   "19877754#0",
+   "903438150"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 51.2
+ },
+ "Rue du Figuier": {
+  "edges": [
+   "19880538#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 112.4
+ },
+ "Rue du Fouarre": {
+  "edges": [
+   "4221394#0"
+  ],
+  "road_class": "tertiary",
+  "residential": false,
+  "judged": true,
+  "length_m": 25.0
+ },
+ "Rue du Haut Pavé": {
+  "edges": [
+   "21887394#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 35.6
+ },
+ "Rue du Parc Royal": {
+  "edges": [
+   "57727929#0",
+   "995864597#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 113.6
+ },
+ "Rue du Perche": {
+  "edges": [
+   "-4574375#2",
+   "28681273#0",
+   "4574375#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 127.6
+ },
+ "Rue du Petit Musc": {
+  "edges": [
+   "60208897#0",
+   "988731606"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 109.4
+ },
+ "Rue du Petit Pont": {
+  "edges": [
+   "40067720#0"
+  ],
+  "road_class": "secondary",
+  "residential": false,
+  "judged": true,
+  "length_m": 58.6
+ },
+ "Rue du Plat d'Étain": {
+  "edges": [
+   "4262918#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 59.8
+ },
+ "Rue du Plâtre": {
+  "edges": [
+   "16877338#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 124.1
+ },
+ "Rue du Pont Louis-Philippe": {
+  "edges": [
+   "4527562#0",
+   "4527562#2",
+   "754316773",
+   "941788338#0"
+  ],
+  "road_class": "residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 205.8
+ },
+ "Rue du Roi Doré": {
+  "edges": [
+   "4574328#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 65.2
+ },
+ "Rue du Roi de Sicile": {
+  "edges": [
+   "231316793#0",
+   "231316793#10",
+   "231316793#4",
+   "231316793#7",
+   "4574321#0"
+  ],
+  "road_class": "living_street/residential",
+  "residential": true,
+  "judged": true,
+  "length_m": 374.3
+ },
+ "Rue du Temple": {
+  "edges": [
+   "1156250667#0",
+   "1156250667#2",
+   "1206253704#0",
+   "45841299#0",
+   "654353241#0",
+   "654353241#3"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 304.4
+ },
+ "Rue le Regrattier": {
+  "edges": [
+   "4433292#0",
+   "4433292#3"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 151.3
+ },
+ "Souterrain Berger Est": {
+  "edges": [
+   "133562191#0"
+  ],
+  "road_class": "unclassified",
+  "residential": true,
+  "judged": true,
+  "length_m": 20.6
+ },
+ "Souterrain Grande Boucle (Voie BCL)": {
+  "edges": [
+   "159488121#0",
+   "159488121#1",
+   "159488121#2"
+  ],
+  "road_class": "unclassified",
+  "residential": true,
+  "judged": true,
+  "length_m": 840.9
+ },
+ "Souterrain Sortie Hôtel de Ville (Voie S2)": {
+  "edges": [
+   "35081974#0"
+  ],
+  "road_class": "unclassified",
+  "residential": true,
+  "judged": true,
+  "length_m": 511.4
+ },
+ "Souterrain de la Petite Boucle (Voie Z)": {
+  "edges": [
+   "19856736"
+  ],
+  "road_class": "unclassified",
+  "residential": true,
+  "judged": true,
+  "length_m": 59.3
+ },
+ "Square Sainte-Croix de la Bretonnerie": {
+  "edges": [
+   "55761055#0"
+  ],
+  "road_class": "living_street",
+  "residential": true,
+  "judged": true,
+  "length_m": 63.9
+ }
+}

@@ -1,0 +1,6 @@
+<viewsettings>
+    <!-- Vehicles coloured by speed (red = stopped, green = moving), drawn 2x larger so they read at area zoom. -->
+    <scheme name="crashtest">
+        <vehicles vehicleMode="8" vehicleQuality="2" vehicle_minSize="1.00" vehicle_exaggeration="2.00"/>
+    </scheme>
+</viewsettings>
