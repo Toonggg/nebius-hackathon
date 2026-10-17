@@ -1,3 +1,7 @@
 .venv/
 work/
 __pycache__/
+.env
+
+# The root .gitignore ignores every lib/ (Python template); the web app needs this one.
+!lovable/src/lib/

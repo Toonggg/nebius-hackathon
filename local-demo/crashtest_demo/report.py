@@ -23,6 +23,21 @@ def verdict(state):
     return f"FAILS ({worst}). No mitigation in the catalogue was verified within budget."
 
 
+def _run_line(s):
+    start = s.events[0]
+    calls = [e for e in s.events if e["type"] == "llm_call"]
+    fallbacks = sum(e["type"] == "fallback_used" for e in s.events)
+    line = (f"Planner: `{start['planner']}` · SUMO: `{start['runner']}` · Budget: {s.used}/{s.budget} "
+            f"experiments · Seeds per experiment: {len(config.SEEDS)}")
+    if calls:
+        models = ", ".join(sorted({c["model"] for c in calls}))
+        tokens = sum((c["prompt_tokens"] or 0) + (c["completion_tokens"] or 0) for c in calls)
+        line += f" · LLM: {len(calls)} calls to {models}, {tokens:,} tokens"
+    if fallbacks:
+        line += f" · ⚠️ {fallbacks} step(s) fell back to the rule-based planner"
+    return line
+
+
 def _violation_name(v):
     names = {"C1": f"spillover on {v['street']}", "C2": "network delay", "C3": "gridlock"}
     return names[v["constraint"]]
@@ -41,14 +56,13 @@ def _fmt_violation(v):
 def write(state, out_dir, maps):
     s = state
     lines = [
-        "# Policy Failure Report (local demo)",
+        "# Policy Failure Report",
         "",
         f"**Policy:** {scenarios.policy_label()} (westbound stays open).",
         "",
         f"**Verdict:** {verdict(s)}",
         "",
-        f"Planner: `state-machine` (stand-in for Nemotron) · Runner: `local` SUMO · "
-        f"Budget: {s.used}/{s.budget} experiments · Seeds per experiment: {len(config.SEEDS)}",
+        _run_line(s),
         "",
         "## What we found",
         "",
@@ -87,7 +101,7 @@ def write(state, out_dir, maps):
         lines.append(f"| {h.id} | {h.text} | `{h.experiment_id}` | {', '.join(h.evidence) or '—'} | {h.status} |")
     lines.append("")
 
-    lines += ["## Evidence (canned; no Tavily call in the local demo)", ""]
+    lines += ["## Evidence (canned cards; no live Tavily search yet)", ""]
     lines += [f"- **[{c['id']}]** {c['claim']} — _{c['source']}_" for c in s.evidence]
     lines.append("")
 

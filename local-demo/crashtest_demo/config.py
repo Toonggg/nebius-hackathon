@@ -1,4 +1,4 @@
-"""Paths and constants for the local demo. Everything stays inside local-demo/."""
+"""Paths and constants. Everything stays inside local-demo/."""
 
 import os
 from pathlib import Path

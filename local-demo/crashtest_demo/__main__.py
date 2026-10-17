@@ -1,10 +1,17 @@
-"""CLI: python -m crashtest_demo {prepare | catalogue | sim ID | watch ID | run}."""
+"""CLI: python -m crashtest_demo {prepare | warm | catalogue | sim ID | watch ID | run}.
+
+Most people want ../crashtest.py instead: it loads .env and runs this in a Token Factory
+Sandbox or locally.
+"""
 
 import argparse
+import base64
 import json
+import os
 import shlex
 import shutil
 import subprocess
+import sys
 from dataclasses import asdict
 
 import sumolib
@@ -23,6 +30,18 @@ def prepare(args):
     print(f"Policy target: {scenarios.target_label()} -> edges {scenarios.target_edges()}")
     for code, site in sites.items():
         print(f"Mitigation site {code}: modal filter on {site['street']} (edges {site['edges']})")
+
+
+def warm(args):
+    """Build every scenario network and demand file (no simulations). Used when baking the sandbox image."""
+    from . import demand
+
+    for s in scenarios.catalogue():
+        scenarios.scenario_net(s)
+    for seed in config.SEEDS:
+        for d in scenarios.DEMAND_SCALE:
+            demand.trips_file(seed, d)
+    print(f"warm: {len(scenarios.catalogue())} scenario nets, {len(config.SEEDS) * 3} demand files")
 
 
 def catalogue(args):
@@ -70,8 +89,37 @@ def run(args):
     shutil.rmtree(out, ignore_errors=True)
     (out / "maps").mkdir(parents=True)
 
-    state = Agent(LocalRunner(), budget=args.budget).run()
+    # --bundle: stdout carries one JSON document (run + report + maps); stderr carries one JSON
+    # event per line as it happens, with a human-readable "msg". That's how crashtest.py and the
+    # Lovable edge function follow a run and collect its results.
+    on_event = None
+    if args.bundle:
+        def on_event(event, msg):
+            print(json.dumps({**event, "msg": msg}, ensure_ascii=False, default=str), file=sys.stderr, flush=True)
+    runner = LocalRunner()
+    runner.name = args.runner_label or runner.name
+    state = Agent(runner, planner=_planner(args.planner), budget=args.budget, on_event=on_event).run()
+    run_json = write_outputs(state, out)
+    if args.bundle:
+        maps = {k: base64.b64encode((out / v).read_bytes()).decode() for k, v in run_json["maps"].items()}
+        json.dump({"run": run_json, "report_md": (out / "report.md").read_text(), "maps_png_base64": maps},
+                  sys.stdout, ensure_ascii=False, default=str)
+        return
+    print(f"\nVerdict: {run_json['verdict']}")
+    print(f"Report:  {(out / 'report.md').relative_to(config.ROOT)}")
+    print(f"Events:  {(out / 'run.json').relative_to(config.ROOT)}")
 
+
+def _planner(choice):
+    if choice == "rules" or (choice == "auto" and not os.environ.get("NEBIUS_API_KEY")):
+        return None  # Agent defaults to StateMachinePlanner
+    from .nemotron import NemotronPlanner
+
+    return NemotronPlanner()
+
+
+def write_outputs(state, out):
+    """Maps, report.md and run.json for a finished agent run. Also used by --bundle (sandbox runs)."""
     maps = {}
     for exp_id, result in state.results.items():
         if exp_id == NOMINAL or (exp_id in {m["experiment_id"] for m in state.mitigations.values()}):
@@ -79,20 +127,19 @@ def run(args):
             delta_map(result, Scenario.parse(exp_id), png)
             maps[exp_id] = png.relative_to(out).as_posix()
 
-    report_path = report.write(state, out, maps)
+    report.write(state, out, maps)
     state.events.append({"seq": len(state.events), "type": "report_ready", "path": "report.md"})
     run_json = {
         "events": state.events,
         "hypotheses": [asdict(h) for h in state.hypotheses],
         "mitigations": state.mitigations,
+        "maps": maps,
         # Raw per-seed edge volumes are left in work/; the run file keeps the comparisons.
         "experiments": {k: v for k, v in state.results.items() if not k.startswith("quays:BASE")},
         "verdict": report.verdict(state),
     }
     (out / "run.json").write_text(json.dumps(run_json, indent=1, ensure_ascii=False, default=str))
-    print(f"\nVerdict: {run_json['verdict']}")
-    print(f"Report:  {report_path.relative_to(config.ROOT)}")
-    print(f"Events:  {(out / 'run.json').relative_to(config.ROOT)}")
+    return run_json
 
 
 def main():
@@ -101,6 +148,7 @@ def main():
     a = sub.add_parser("prepare", help="build the SUMO network and pick mitigation sites")
     a.add_argument("--rebuild", action="store_true", help="rebuild the network from the OSM file")
     a.set_defaults(func=prepare)
+    sub.add_parser("warm", help="build all scenario nets and demand files (no simulation)").set_defaults(func=warm)
     sub.add_parser("catalogue", help="list every experiment the agent may run").set_defaults(func=catalogue)
     a = sub.add_parser("sim", help="run one experiment (3 seeds) and print its metrics")
     a.add_argument("experiment_id")
@@ -115,6 +163,10 @@ def main():
     a.add_argument("--budget", type=int, default=6, help="max policy experiments (baselines are free)")
     a.add_argument("--name", default="latest", help="output folder under runs/")
     a.add_argument("--fresh", action="store_true", help="ignore cached simulation results")
+    a.add_argument("--planner", choices=["auto", "nemotron", "rules"], default="auto",
+                   help="auto = Nemotron if NEBIUS_API_KEY is set, else the rule-based planner")
+    a.add_argument("--bundle", action="store_true", help="print one JSON bundle to stdout, log to stderr")
+    a.add_argument("--runner-label", help=argparse.SUPPRESS)  # "sandbox" when run inside one
     a.set_defaults(func=run)
     args = p.parse_args()
     args.func(args)

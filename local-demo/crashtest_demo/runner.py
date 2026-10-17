@@ -1,9 +1,8 @@
 """SimRunner: turn an experiment ID + seeds into raw SUMO measurements.
 
-Only ``LocalRunner`` exists in the demo: SUMO runs as a subprocess and every file it
-reads or writes lives under ``local-demo/work/``. PLAN.md's ``OracleRunner`` (lookup of
-precomputed results) and ``SandboxRunner`` (Token Factory Sandboxes) would implement the
-same ``run()`` method; see NEBIUS.md.
+``LocalRunner`` runs SUMO as a subprocess; every file it reads or writes lives under
+``local-demo/work/``. In a Token Factory Sandbox the whole agent runs in the sandbox, so the
+same ``LocalRunner`` is used there too (see ``sandbox.py``).
 """
 
 import importlib.metadata

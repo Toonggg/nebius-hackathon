@@ -1,11 +1,11 @@
-"""The agent loop (PLAN.md §8), with a rule-based state machine where the LLM would be.
+"""The agent loop (PLAN.md §8).
 
 Two pieces, kept apart on purpose:
 
-- ``StateMachinePlanner`` makes every *judgement*: which hypotheses to write and which
-  experiment to run next. In the real product these are Nemotron calls on Token Factory
-  (Ultra for hypotheses, Super for each step). The planner returns the same ``Decision``
-  shape the LLM would, so swapping it is a one-class change (see NEBIUS.md).
+- A planner makes every *judgement*: which hypotheses to write and which experiment to run
+  next. ``nemotron.NemotronPlanner`` asks Nemotron on Token Factory (Ultra for hypotheses,
+  Super for each step); ``StateMachinePlanner`` below is the rule-based fallback. Both
+  return the same ``Decision`` shape.
 - ``Agent`` enforces the rules: phase transitions, the experiment catalogue, the budget,
   and deterministic verdicts (constraint checks, hypothesis status, mitigation verification).
   It never trusts the planner with a number.
@@ -87,7 +87,7 @@ class RunState:
 
 
 class Planner(Protocol):
-    """Anything that can make the agent's judgement calls. See NEBIUS.md for a Nemotron one."""
+    """Anything that can make the agent's judgement calls (``nemotron.NemotronPlanner`` or the rules below)."""
 
     name: str
 
@@ -178,12 +178,15 @@ class StateMachinePlanner:
 
 
 class Agent:
-    def __init__(self, runner, planner: Planner | None = None, budget=6, log=print):
+    def __init__(self, runner, planner: Planner | None = None, budget=6, log=print, on_event=None):
         self.runner = runner
         self.planner = planner or StateMachinePlanner()
         self.state = RunState(budget=budget)
         self.log = log
+        self.on_event = on_event  # structured alternative to log (used by --bundle)
         self._t0 = time.time()
+        if hasattr(self.planner, "emit"):  # LLM planners report their calls as events
+            self.planner.emit = self.emit
 
     # --- events ---------------------------------------------------------------------
 
@@ -191,7 +194,10 @@ class Agent:
         event = {"seq": len(self.state.events), "t": round(time.time() - self._t0, 2),
                  "phase": self.state.phase.value, "type": type_, **payload}
         self.state.events.append(event)
-        self.log(_format_event(event))
+        if self.on_event:
+            self.on_event(event, _format_event(event))
+        else:
+            self.log(_format_event(event))
 
     def enter(self, phase):
         self.state.phase = phase
@@ -364,6 +370,13 @@ def _format_event(e):
         return f"{t} network brief: streets on shortest detours (paths): {ranking}"
     if kind == "experiment_selected":
         return f"{t} running {e['experiment_id']} × {len(config.SEEDS)} seeds (budget left after: {e['budget_left']})"
+    if kind == "llm_call":
+        return (f"{t}   llm {e['step']}: {e['model']} {e['latency_s']}s "
+                f"({e['prompt_tokens']} in / {e['completion_tokens']} out tokens)")
+    if kind == "llm_error":
+        return f"{t}   llm {e['step']} error (attempt {e['attempt']}): {e['error']}"
+    if kind == "fallback_used":
+        return f"{t}   ! {e['step']}: falling back to the {e['planner']} planner"
     if kind == "run_started":
         return f"{t} crash test: {e['policy']} | planner={e['planner']} runner={e['runner']} budget={e['budget']}"
     return f"{t} {kind} {({k: v for k, v in e.items() if k not in ('seq', 't', 'phase', 'type', 'brief')})}"
