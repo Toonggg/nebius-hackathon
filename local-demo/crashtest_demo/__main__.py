@@ -1,4 +1,4 @@
-"""CLI: python -m crashtest_demo {prepare | warm | catalogue | sim ID | watch ID | run}.
+"""CLI: python -m crashtest_demo {prepare | streets [NAME] | warm | catalogue | sim ID | watch ID | run}.
 
 Most people want ../crashtest.py instead: it loads .env and runs this in a Token Factory
 Sandbox or locally.
@@ -24,8 +24,7 @@ from .scenarios import Scenario
 
 
 def prepare(args):
-    network.build_net(force=args.rebuild)
-    sites = scenarios.screen_sites()
+    sites = network.prepare(force=args.rebuild)
     print(f"Network: {config.NET_FILE.relative_to(config.ROOT)}")
     print(f"Policy target: {scenarios.target_label()} -> edges {scenarios.target_edges()}")
     for code, site in sites.items():
@@ -42,6 +41,27 @@ def warm(args):
         for d in scenarios.DEMAND_SCALE:
             demand.trips_file(seed, d)
     print(f"warm: {len(scenarios.catalogue())} scenario nets, {len(config.SEEDS) * 3} demand files")
+
+
+def streets(args):
+    """Street names in the network, for filling in scenario.json (policy.street / from / to)."""
+    data = network.load_streets()
+    if not args.name:
+        rows = sorted(((s["length_m"], n, s["road_class"]) for n, s in data.items()
+                       if not n.startswith("(unnamed")), reverse=True)
+        for length, name, road_class in rows[:args.top]:
+            print(f"{length:7.0f} m  {road_class:28} {name}")
+        return
+    if args.name not in data:
+        raise SystemExit(f"No street named {args.name!r}. Run without a name to list them.")
+    net = sumolib.net.readNet(str(config.NET_FILE))
+    e2s = network.edge_to_street()
+    for e in data[args.name]["edges"]:
+        edge = net.getEdge(e)
+        crossing = sorted({e2s[x.getID()] for n in (edge.getFromNode(), edge.getToNode())
+                           for x in n.getIncoming() + n.getOutgoing()
+                           if x.getID() in e2s and e2s[x.getID()] != args.name})
+        print(f"{e:16} {edge.getFromNode().getID()} -> {edge.getToNode().getID()}  crosses: {', '.join(crossing)}")
 
 
 def catalogue(args):
@@ -102,8 +122,10 @@ def run(args):
     run_json = write_outputs(state, out)
     if args.bundle:
         maps = {k: base64.b64encode((out / v).read_bytes()).decode() for k, v in run_json["maps"].items()}
-        json.dump({"run": run_json, "report_md": (out / "report.md").read_text(), "maps_png_base64": maps},
-                  sys.stdout, ensure_ascii=False, default=str)
+        scenario = config.scenario_subset([k for k in config.SCENARIO if not k.startswith("_")])
+        scenario["policy_label"] = scenarios.policy_label()
+        json.dump({"scenario": scenario, "run": run_json, "report_md": (out / "report.md").read_text(),
+                   "maps_png_base64": maps}, sys.stdout, ensure_ascii=False, default=str)
         return
     print(f"\nVerdict: {run_json['verdict']}")
     print(f"Report:  {(out / 'report.md').relative_to(config.ROOT)}")
@@ -135,7 +157,7 @@ def write_outputs(state, out):
         "mitigations": state.mitigations,
         "maps": maps,
         # Raw per-seed edge volumes are left in work/; the run file keeps the comparisons.
-        "experiments": {k: v for k, v in state.results.items() if not k.startswith("quays:BASE")},
+        "experiments": {k: v for k, v in state.results.items() if not scenarios.is_baseline(k)},
         "verdict": report.verdict(state),
     }
     (out / "run.json").write_text(json.dumps(run_json, indent=1, ensure_ascii=False, default=str))
@@ -145,10 +167,14 @@ def write_outputs(state, out):
 def main():
     p = argparse.ArgumentParser(prog="crashtest_demo")
     sub = p.add_subparsers(required=True)
-    a = sub.add_parser("prepare", help="build the SUMO network and pick mitigation sites")
-    a.add_argument("--rebuild", action="store_true", help="rebuild the network from the OSM file")
+    a = sub.add_parser("prepare", help="bring data/ in line with scenario.json (network + mitigation sites)")
+    a.add_argument("--rebuild", action="store_true", help="re-download and rebuild everything")
     a.set_defaults(func=prepare)
     sub.add_parser("warm", help="build all scenario nets and demand files (no simulation)").set_defaults(func=warm)
+    a = sub.add_parser("streets", help="list streets, or the cross streets along one (for scenario.json)")
+    a.add_argument("name", nargs="?")
+    a.add_argument("--top", type=int, default=40, help="how many streets to list (longest first)")
+    a.set_defaults(func=streets)
     sub.add_parser("catalogue", help="list every experiment the agent may run").set_defaults(func=catalogue)
     a = sub.add_parser("sim", help="run one experiment (3 seeds) and print its metrics")
     a.add_argument("experiment_id")
@@ -169,6 +195,8 @@ def main():
     a.add_argument("--runner-label", help=argparse.SUPPRESS)  # "sandbox" when run inside one
     a.set_defaults(func=run)
     args = p.parse_args()
+    if args.func is not prepare:
+        config.require_current_data()
     args.func(args)
 
 

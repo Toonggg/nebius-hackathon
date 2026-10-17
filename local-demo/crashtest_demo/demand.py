@@ -1,8 +1,8 @@
 """Synthetic design-hour demand.
 
-PLAN.md calibrates demand to Paris sensor counts with routeSampler. The demo skips that:
-it draws random trips (biased towards the network fringe, so most of them are through
-traffic) and then sanity-checks the baseline against the sensor means quoted in PLAN.md.
+PLAN.md calibrates demand to sensor counts with routeSampler. The demo skips that: it draws
+random trips, biased towards the network fringe so most of them are through traffic. The
+volume comes from scenario.json (demand.trips_per_hour).
 """
 
 import random
@@ -15,9 +15,7 @@ import sumo
 
 from . import config, scenarios
 
-# Normal demand (DN), private cars. Roughly half of what the sensors in PLAN.md §7 imply:
-# the study area is too small to carry more once the quay is cut (see README).
-TRIPS_PER_HOUR = 1200
+TRIPS_PER_HOUR = config.SCENARIO["demand"]["trips_per_hour"]  # normal demand (DN), private cars
 WARMUP_S = 300  # trips depart over WARMUP_S + SIM_SECONDS; only the last hour is measured
 MAX_SCALE = max(scenarios.DEMAND_SCALE.values())
 

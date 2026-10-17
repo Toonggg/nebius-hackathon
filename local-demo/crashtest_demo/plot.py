@@ -55,8 +55,9 @@ def delta_map(result, scenario, path, limit=200):
     ax.set_title(f"{scenario.id}\n" + textwrap.fill(scenarios.describe(scenario), 90), fontsize=10)
     ax.set_aspect("equal")
     ax.set_axis_off()
-    ax.text(0.0, -0.02, "Black dashed: closed to cars. Dotted: Rue de Rivoli (no through cars). "
-            "© OpenStreetMap contributors (ODbL).", transform=ax.transAxes, fontsize=7, color="#555555")
+    always = ", ".join(scenarios.BASE_RESTRICTED_STREETS)
+    ax.text(0.0, -0.02, "Black dashed: closed to cars. " + (f"Dotted: {always} (no cars in any scenario). " if always
+            else "") + "© OpenStreetMap contributors (ODbL).", transform=ax.transAxes, fontsize=7, color="#555555")
     fig.tight_layout()
     fig.savefig(path, dpi=130)
     plt.close(fig)

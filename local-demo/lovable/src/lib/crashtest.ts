@@ -6,7 +6,8 @@
 // - startLiveRun(): starts a fresh run in a Token Factory Sandbox via the "crashtest-run" edge
 //   function and streams its events. Fails until the Nebius project has Sandboxes access.
 //
-// Both paths produce the same Bundle, so the UI renders them identically.
+// Both paths produce the same Bundle, so the UI renders them identically. Everything about the
+// case (city, street, policy wording, evidence) is in bundle.scenario: never hard-code it in the UI.
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -41,6 +42,28 @@ export const EVENT_TYPES = {
   budget_exhausted: "used",
   report_ready: "path",
 } as const;
+
+/** The case being crash-tested: a copy of the engine's scenario.json (see AGENTS.md). */
+export interface Scenario {
+  id: string;
+  city: string;
+  area_name: string;
+  bbox: [number, number, number, number]; // west, south, east, north (degrees)
+  policy: { street: string; from: string; to: string; direction: string };
+  policy_label: string; // ready-made sentence, e.g. "<street> from <from> to <to> closed to <direction> cars"
+  always_closed_to_cars: string[];
+  always_closed_reason?: string;
+  demand: { trips_per_hour: number; low: number; high: number };
+  checks: {
+    G1_min_drop_pct: number;
+    C1_min_pct: number;
+    C1_min_cars_per_h: number;
+    C2_min_pct: number;
+    C2_min_vehh: number;
+  };
+  experiment_prefix: string;
+  evidence: { id: string; source: string; claim: string; tags: string[] }[];
+}
 
 export interface Hypothesis {
   id: string;
@@ -81,6 +104,7 @@ export interface Experiment {
 }
 
 export interface Bundle {
+  scenario: Scenario;
   run: {
     events: RunEvent[];
     hypotheses: Hypothesis[];

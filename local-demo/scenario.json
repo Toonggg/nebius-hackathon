@@ -1,0 +1,87 @@
+{
+  "_help": "The one file that defines the crash-test case. Edit it, then run `python3 crashtest.py` (it rebuilds the network if needed). See AGENTS.md / human.md.",
+  "id": "paris-hotel-de-ville",
+  "city": "Paris",
+  "area_name": "Hôtel de Ville and the southern Marais",
+  "bbox": [
+    2.346,
+    48.8515,
+    2.364,
+    48.861
+  ],
+  "_bbox_help": "Study area [west, south, east, north] in degrees (WGS84). Keep it small (~1-2 km): bigger areas run slower. Changing it re-downloads the roads from OpenStreetMap.",
+  "policy": {
+    "street": "Quai de l'Hôtel de Ville",
+    "from": "Rue de Brosse",
+    "to": "Pont Louis-Philippe",
+    "direction": "eastbound",
+    "_help": "Cars may no longer drive along `street` from its junction with `from` to its junction with `to` (exact OSM street names). The opposite direction stays open. `direction` is only a label for that from->to direction."
+  },
+  "always_closed_to_cars": [
+    "Rue de Rivoli"
+  ],
+  "always_closed_reason": "bus, taxi and bike only since 2020",
+  "_always_closed_help": "Streets closed to private cars in every scenario, baseline included (e.g. bus-only streets). May be empty.",
+  "residential_road_types": [
+    "residential",
+    "living_street",
+    "unclassified"
+  ],
+  "_residential_help": "OSM highway types counted as residential streets (spillover check C1 and mitigation sites).",
+  "demand": {
+    "trips_per_hour": 1200,
+    "low": 0.85,
+    "high": 1.15
+  },
+  "_demand_help": "Random car trips per hour at normal demand; low/high scale it. Too high gridlocks everything, too low shows nothing: tune per area with `python -m crashtest_demo sim <prefix>:FC.M0.DN`.",
+  "checks": {
+    "G1_min_drop_pct": 70,
+    "C1_min_pct": 30,
+    "C1_min_cars_per_h": 100,
+    "C2_min_pct": 10,
+    "C2_min_vehh": 20,
+    "_help": "G1 goal: traffic on the closed stretch falls by at least this %. C1 spillover: a residential street rises by more than both. C2 delay: network delay rises by more than both. C3 gridlock is fixed."
+  },
+  "experiment_prefix": "quays",
+  "_experiment_prefix_help": "Experiment IDs look like <prefix>:FC.F1.DN. Any short lowercase word.",
+  "evidence": [
+    {
+      "id": "E1",
+      "source": "Cairns, Hass-Klau & Goodwin, 'Traffic Impact of Highway Capacity Reductions: Assessment of the Evidence' (Landor, 1998)",
+      "claim": "When road capacity is removed, part of the traffic does not reappear elsewhere ('traffic evaporation'), but the share varies widely from case to case.",
+      "tags": [
+        "evaporation",
+        "displacement"
+      ]
+    },
+    {
+      "id": "E2",
+      "source": "Evaluations of the 2016 closure of the Voie Georges-Pompidou (Paris right-bank lower quays)",
+      "claim": "After the lower quays closed, monitoring reported traffic shifting onto nearby parallel routes, including the upper quays, alongside a debate about how much traffic evaporated.",
+      "tags": [
+        "displacement",
+        "paris",
+        "quays"
+      ]
+    },
+    {
+      "id": "E3",
+      "source": "Evaluations of London Low Traffic Neighbourhoods (e.g. Goodman et al., 2021)",
+      "claim": "The effect of filtering streets on surrounding roads differs from site to site, so displacement onto other streets has to be checked locally rather than assumed away.",
+      "tags": [
+        "displacement",
+        "modal-filter"
+      ]
+    },
+    {
+      "id": "E4",
+      "source": "Buchanan, 'Traffic in Towns' (HMSO, 1963)",
+      "claim": "Residential streets have a limited 'environmental capacity': beyond a certain traffic level, living conditions degrade even if the street can physically carry more vehicles.",
+      "tags": [
+        "residential",
+        "environmental-capacity"
+      ]
+    }
+  ],
+  "_evidence_help": "Research cards the hypotheses are grounded in (placeholders until live Tavily search). Keep ids E1, E2, ..."
+}

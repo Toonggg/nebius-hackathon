@@ -15,9 +15,13 @@ street, or just move the traffic elsewhere?"*
   the secrets `NEBIUS_API_KEY` and `NEBIUS_PROJECT_ID` (ask me for the values; never put them in code).
 - `public/demo/latest.json`: a recorded real run (the `Bundle` type).
 
+**Scenario-agnostic:** the case under test (city, street, policy, evidence) changes from time to time.
+Never hard-code a city or street name. Take all such text from `bundle.scenario` (type `Scenario`).
+Load the recorded run on page load, so the header can show the scenario before any run starts.
+
 **Page layout**
-1. **Header:** name, tagline, and the policy under test: "Close Quai de l'Hôtel de Ville (Paris) to
-   eastbound cars between Rue de Brosse and Pont Louis-Philippe."
+1. **Header:** name, tagline, and the policy under test from `bundle.scenario`: `policy_label`, plus
+   `city` and `area_name` as a subtitle (e.g. "Paris · Hôtel de Ville and the southern Marais").
 2. **Two buttons:** "Run live crash test" (`startLiveRun`) and "Watch recorded run" (`replayRun` on
    `loadRecordedRun()`, speed 2). If a live run fails to start, show a small notice ("Live runs
    are unavailable right now, showing a recorded run") and fall back to the recorded run. Show a

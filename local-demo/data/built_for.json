@@ -1,0 +1,22 @@
+{
+ "bbox": [
+  2.346,
+  48.8515,
+  2.364,
+  48.861
+ ],
+ "residential_road_types": [
+  "residential",
+  "living_street",
+  "unclassified"
+ ],
+ "policy": {
+  "street": "Quai de l'Hôtel de Ville",
+  "from": "Rue de Brosse",
+  "to": "Pont Louis-Philippe",
+  "direction": "eastbound"
+ },
+ "always_closed_to_cars": [
+  "Rue de Rivoli"
+ ]
+}

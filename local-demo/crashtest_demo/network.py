@@ -1,4 +1,4 @@
-"""Fetch the OSM extract, build the SUMO network and index its streets."""
+"""Fetch the OSM extract, build the SUMO network and index its streets (all for scenario.json)."""
 
 import gzip
 import html
@@ -39,6 +39,28 @@ def fetch_osm(force=False):
             return config.OSM_FILE
         print(f"Overpass mirror {url} is busy")
     raise RuntimeError("All Overpass mirrors failed; try again in a minute")
+
+
+def prepare(force=False):
+    """Bring data/ in line with scenario.json, redoing only what changed. Returns the mitigation sites.
+
+    bbox changed           -> download roads from OpenStreetMap, rebuild the SUMO network
+    road types changed     -> re-index streets
+    policy/closures changed -> re-screen the mitigation sites (scenarios.screen_sites)
+    """
+    from . import scenarios  # scenarios imports network
+
+    built = json.loads(config.BUILT_FOR_FILE.read_text()) if config.BUILT_FOR_FILE.exists() else {}
+    want = config.scenario_subset(config.NETWORK_FIELDS + config.SITE_FIELDS)
+    new_area = force or built.get("bbox") != want["bbox"] or not config.NET_FILE.exists()
+    if new_area:
+        fetch_osm(force=True)
+        build_net(force=True)
+    elif built.get("residential_road_types") != want["residential_road_types"]:
+        index_streets()
+    sites = scenarios.screen_sites()
+    config.BUILT_FOR_FILE.write_text(json.dumps(want, indent=1, ensure_ascii=False) + "\n")
+    return sites
 
 
 def build_net(force=False):
@@ -88,8 +110,7 @@ def index_streets():
         out[name] = {
             "edges": s["edges"],
             "road_class": classes[0] if len(classes) == 1 else "/".join(classes),
-            # Paris "residential" streets here are tagged residential, living_street or unclassified.
-            "residential": all(c in ("residential", "living_street", "unclassified") for c in classes),
+            "residential": all(c in config.SCENARIO["residential_road_types"] for c in classes),
             "judged": s["interior_edges"] > 0 and not name.startswith("(unnamed"),
             "length_m": round(s["length_m"], 1),
         }

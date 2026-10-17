@@ -4,11 +4,12 @@ from statistics import mean
 
 from . import config, network
 
-# Defaults from PLAN.md §7.
+_checks = config.SCENARIO["checks"]  # thresholds; PLAN.md §7 defaults in the Paris scenario
 CONSTRAINTS = {
-    "G1": {"rule": "target-street car volume falls by at least", "min_drop_pct": 70},
-    "C1": {"rule": "residential street rises by more than both", "pct": 30, "vehh": 100, "floor": 50},
-    "C2": {"rule": "network delay rises by more than both", "pct": 10, "vehh": 20},
+    "G1": {"rule": "target-street car volume falls by at least", "min_drop_pct": _checks["G1_min_drop_pct"]},
+    "C1": {"rule": "residential street rises by more than both", "pct": _checks["C1_min_pct"],
+           "vehh": _checks["C1_min_cars_per_h"], "floor": 50},
+    "C2": {"rule": "network delay rises by more than both", "pct": _checks["C2_min_pct"], "vehh": _checks["C2_min_vehh"]},
     "C3": {"rule": "gridlock: teleports or unfinished trips reach", "teleports_min": 10,
            "teleports_share": 0.005, "unfinished_share": 0.02},
 }

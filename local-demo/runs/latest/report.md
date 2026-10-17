@@ -1,10 +1,10 @@
 # Policy Failure Report
 
-**Policy:** Quai de l'Hôtel de Ville from Rue de Brosse to Pont Louis-Philippe closed to eastbound cars (westbound stays open).
+**Policy:** Quai de l'Hôtel de Ville from Rue de Brosse to Pont Louis-Philippe closed to eastbound cars (the opposite direction stays open).
 
 **Verdict:** FAILS (spillover on Rue de Brosse, spillover on Rue François Miron, spillover on Rue de Fourcy). No mitigation in the catalogue was verified within budget.
 
-Planner: `nemotron` · SUMO: `local` · Budget: 6/6 experiments · Seeds per experiment: 3 · LLM: 9 calls to nvidia/Nemotron-3-Ultra-550b-a55b, nvidia/nemotron-3-super-120b-a12b, 26,144 tokens
+Planner: `nemotron` · SUMO: `local` · Budget: 6/6 experiments · Seeds per experiment: 3 · LLM: 9 calls to nvidia/Nemotron-3-Ultra-550b-a55b, nvidia/nemotron-3-super-120b-a12b, 25,998 tokens
 
 ## What we found
 
@@ -45,14 +45,6 @@ Planner: `nemotron` · SUMO: `local` · Budget: 6/6 experiments · Seeds per exp
 
 ![quays:FC.F12.DN](maps/quays_FC_F12_DN.png)
 
-### `quays:FC.M0.DL`: Quai de l'Hôtel de Ville from Rue de Brosse to Pont Louis-Philippe closed to eastbound cars, low demand
-
-- Goal G1 (target segment −70%): met (149 → 0 cars/h)
-- Delay: 27 → 31 veh·h; teleports 0; unfinished trips 0
-- ⚠️ minor: **Rue François Miron**: 38 → 187 cars/h (+149, +298%; +140…+165 across seeds)
-- ⚠️ minor: **Rue de Brosse**: 12 → 161 cars/h (+149, +298%; +141…+164 across seeds)
-- ⚠️ minor: **Rue de Fourcy**: 42 → 190 cars/h (+148, +296%; +140…+161 across seeds)
-
 ### `quays:FC.M0.DH`: Quai de l'Hôtel de Ville from Rue de Brosse to Pont Louis-Philippe closed to eastbound cars, high demand
 
 - Goal G1 (target segment −70%): met (196 → 0 cars/h)
@@ -62,6 +54,14 @@ Planner: `nemotron` · SUMO: `local` · Budget: 6/6 experiments · Seeds per exp
 - ⚠️ major: **Rue François Miron**: 49 → 235 cars/h (+185, +360%; +175…+197 across seeds)
 - ⚠️ major: **Rue de Fourcy**: 54 → 228 cars/h (+174, +323%; +162…+181 across seeds)
 - ⚠️ major: **Network delay**: 38 → 123 veh·h (+223%)
+
+### `quays:FC.M0.DL`: Quai de l'Hôtel de Ville from Rue de Brosse to Pont Louis-Philippe closed to eastbound cars, low demand
+
+- Goal G1 (target segment −70%): met (149 → 0 cars/h)
+- Delay: 27 → 31 veh·h; teleports 0; unfinished trips 0
+- ⚠️ minor: **Rue François Miron**: 38 → 187 cars/h (+149, +298%; +140…+165 across seeds)
+- ⚠️ minor: **Rue de Brosse**: 12 → 161 cars/h (+149, +298%; +141…+164 across seeds)
+- ⚠️ minor: **Rue de Fourcy**: 42 → 190 cars/h (+148, +296%; +140…+161 across seeds)
 
 ## Mitigations tried
 
@@ -91,9 +91,10 @@ Planner: `nemotron` · SUMO: `local` · Budget: 6/6 experiments · Seeds per exp
 
 ## Assumptions and limitations
 
-- Study area is a ~1.3 × 1.1 km box around Hôtel de Ville (bbox (2.346, 48.8515, 2.364, 48.861)); detours outside it are invisible to the model, which overstates local spillover.
-- Demand is synthetic: 1200 random car trips/h at normal demand (×0.85 / ×1.15 for low / high), biased to the network fringe. It is **not** calibrated to the Paris sensor counts (PLAN.md §7 does that with routeSampler).
-- Rue de Rivoli is closed to through cars in every scenario (OSM: `motor_vehicle=destination;permit`). Buses, taxis, bikes and pedestrians are not simulated.
+- Study area is a ~1.3 × 1.1 km box around Hôtel de Ville and the southern Marais, Paris (bbox (2.346, 48.8515, 2.364, 48.861)); detours outside it are invisible to the model, which overstates local spillover.
+- Demand is synthetic: 1200 random car trips/h at normal demand (×0.85 / ×1.15 for low / high), biased to the network fringe. It is **not** calibrated to real traffic counts.
+- Rue de Rivoli is closed to private cars in every scenario, baseline included (bus, taxi and bike only since 2020).
+- Only private cars are simulated: no buses, taxis, bikes or pedestrians.
 - Half of the drivers re-route every 2 minutes; nobody changes mode or time of travel, and no traffic evaporates (E1 suggests some would).
 - A street's volume is its busiest link. A violation is *robust* if it appears in at least 2 of 3 seeds.
 - Untested catalogue entries (6): `quays:FC.F1.DL`, `quays:FC.F1.DH`, `quays:FC.F2.DL`, `quays:FC.F2.DH`, `quays:FC.F12.DL`, `quays:FC.F12.DH`.

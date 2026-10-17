@@ -1,5 +1,7 @@
 # How to read the crash test
 
+This guide uses the current scenario ([scenario.json](scenario.json)), Paris, as its example.
+
 ## The question
 
 Paris closes **Quai de l'Hôtel de Ville to eastbound cars** (Rue de Brosse → Pont Louis-Philippe).
@@ -11,7 +13,7 @@ in simulation before the bollards go in.
 
 | Step | Done by | Output |
 |---|---|---|
-| Read the evidence (4 cards about past road closures) | fixed file for now | evidence cards |
+| Read the evidence (cards about past road closures) | `scenario.json` for now | evidence cards |
 | Write hypotheses ("traffic will spill onto Rue de Brosse") | **Nemotron 3 Ultra** | 3–7 testable claims |
 | Choose the next experiment | **Nemotron 3 Super** | one pick from a fixed list, with a reason |
 | Simulate it | **SUMO**: every car for one rush hour, 3 random seeds | traffic per street |
@@ -27,7 +29,7 @@ The AI only chooses *what to test*. Every number comes from SUMO, and every verd
 | Part | Values |
 |---|---|
 | policy | `BASE` today's streets (the baseline) · `FC` the closure |
-| mitigation | `M0` none · `F1` modal filter (street closed to through cars) on Rue François Miron · `F2` same on Rue de Brosse · `F12` both |
+| mitigation | `M0` none · `F1` modal filter (street closed to through cars) on the detour street most drivers would use (here Rue François Miron) · `F2` same on the second (here Rue de Brosse) · `F12` both |
 | demand | `DL` low (−15%) · `DN` normal (1,200 car trips/h) · `DH` high (+15%) |
 
 Each experiment is compared with the baseline at the same demand. The agent may run up to 6

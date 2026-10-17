@@ -23,14 +23,15 @@ A Python harness runs SUMO for you; you never see or invent numbers it hasn't me
 Policy: {policy}. Goal G1: traffic on that segment falls by at least {g1}%.
 Constraints: C1 a residential street rises by >{c1_pct}% and >{c1_veh} cars/h; C2 network delay rises by
 >{c2_pct}% and >{c2_veh} veh·h; C3 gridlock. A violation is robust if it shows up in most seeds.
-Experiment IDs are quays:{{policy}}.{{mitigation}}.{{demand}}: policy FC = the closure; mitigation M0 none,
+Experiment IDs are {prefix}:{{policy}}.{{mitigation}}.{{demand}}: policy FC = the closure; mitigation M0 none,
 F1/F2 a modal filter on the 1st/2nd ranked detour street, F12 both; demand DL/DN/DH = low/normal/high.
 Baselines (BASE) run automatically and are free. Reply with JSON only."""
 
 
 def _system():
     c = metrics.CONSTRAINTS
-    return SYSTEM.format(policy=scenarios.policy_label(), g1=c["G1"]["min_drop_pct"], c1_pct=c["C1"]["pct"],
+    return SYSTEM.format(policy=scenarios.policy_label(), prefix=scenarios.PREFIX,
+                         g1=c["G1"]["min_drop_pct"], c1_pct=c["C1"]["pct"],
                          c1_veh=c["C1"]["vehh"], c2_pct=c["C2"]["pct"], c2_veh=c["C2"]["vehh"])
 
 
@@ -170,7 +171,7 @@ def _summarise(state, allowed):
     """What Super sees each step: text only, no edge-level data."""
     experiments = {}
     for exp_id, r in state.results.items():
-        if exp_id.startswith("quays:BASE"):
+        if scenarios.is_baseline(exp_id):
             continue
         experiments[exp_id] = {
             "label": r["label"],

@@ -4,6 +4,8 @@ In the real product, Nemotron Ultra writes the narrative with ``{{F12}}`` fact p
 (PLAN.md §6). Here the narrative is templated.
 """
 
+import math
+
 from . import config, demand, metrics, scenarios
 from .agent import NOMINAL
 
@@ -21,6 +23,21 @@ def verdict(state):
         return (f"FAILS AS PROPOSED ({worst}). Passes with the "
                 f"{scenarios.describe(scenarios.Scenario('FC', fixed, 'DN')).split(', ')[1]}.")
     return f"FAILS ({worst}). No mitigation in the catalogue was verified within budget."
+
+
+def _box_km():
+    w, s, e, n = config.BBOX
+    km_per_deg_lon = 111.32 * math.cos(math.radians((s + n) / 2))
+    return f"{(e - w) * km_per_deg_lon:.1f} × {(n - s) * 110.57:.1f} km"
+
+
+def _always_closed_line():
+    streets = config.SCENARIO["always_closed_to_cars"]
+    if not streets:
+        return []
+    why = config.SCENARIO.get("always_closed_reason")
+    return [f"- {', '.join(streets)} {'is' if len(streets) == 1 else 'are'} closed to private cars in every "
+            f"scenario, baseline included{f' ({why})' if why else ''}."]
 
 
 def _run_line(s):
@@ -58,7 +75,7 @@ def write(state, out_dir, maps):
     lines = [
         "# Policy Failure Report",
         "",
-        f"**Policy:** {scenarios.policy_label()} (westbound stays open).",
+        f"**Policy:** {scenarios.policy_label()} (the opposite direction stays open).",
         "",
         f"**Verdict:** {verdict(s)}",
         "",
@@ -68,7 +85,7 @@ def write(state, out_dir, maps):
         "",
     ]
     for exp_id, r in s.results.items():
-        if exp_id.startswith("quays:BASE"):
+        if scenarios.is_baseline(exp_id):
             continue
         robust = [v for v in r["violations"] if v["robust"]]
         lines.append(f"### `{exp_id}`: {r['label']}")
@@ -109,13 +126,13 @@ def write(state, out_dir, maps):
     lines += [
         "## Assumptions and limitations",
         "",
-        f"- Study area is a ~1.3 × 1.1 km box around Hôtel de Ville (bbox {config.BBOX}); detours "
-        "outside it are invisible to the model, which overstates local spillover.",
-        f"- Demand is synthetic: {demand.TRIPS_PER_HOUR} random car trips/h at normal demand (×0.85 / ×1.15 "
-        "for low / high), biased to the network fringe. It is **not** calibrated to the Paris sensor counts "
-        "(PLAN.md §7 does that with routeSampler).",
-        "- Rue de Rivoli is closed to through cars in every scenario (OSM: `motor_vehicle=destination;permit`). "
-        "Buses, taxis, bikes and pedestrians are not simulated.",
+        f"- Study area is a ~{_box_km()} box around {config.SCENARIO['area_name']}, {config.SCENARIO['city']} "
+        f"(bbox {config.BBOX}); detours outside it are invisible to the model, which overstates local spillover.",
+        f"- Demand is synthetic: {demand.TRIPS_PER_HOUR} random car trips/h at normal demand "
+        f"(×{scenarios.DEMAND_SCALE['DL']} / ×{scenarios.DEMAND_SCALE['DH']} for low / high), biased to the "
+        "network fringe. It is **not** calibrated to real traffic counts.",
+        *_always_closed_line(),
+        "- Only private cars are simulated: no buses, taxis, bikes or pedestrians.",
         "- Half of the drivers re-route every 2 minutes; nobody changes mode or time of travel, and no traffic "
         "evaporates (E1 suggests some would).",
         "- A street's volume is its busiest link. A violation is *robust* if it appears in at least "

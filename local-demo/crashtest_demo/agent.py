@@ -38,7 +38,7 @@ TRANSITIONS = {
     Phase.ROBUSTNESS: {Phase.REPORT},
 }
 
-NOMINAL = "quays:FC.M0.DN"  # the mandatory policy test
+NOMINAL = scenarios.NOMINAL  # the mandatory policy test
 
 
 @dataclass
@@ -76,7 +76,7 @@ class RunState:
 
     @property
     def used(self):
-        return sum(1 for e in self.results if not e.startswith("quays:BASE"))
+        return sum(1 for e in self.results if not scenarios.is_baseline(e))
 
     @property
     def remaining(self):
@@ -111,7 +111,7 @@ class StateMachinePlanner:
     def plan_hypotheses(self, evidence, brief):
         f1, f2 = brief["sites"]["F1"]["street"], brief["sites"]["F2"]["street"]
         return [
-            Hypothesis("H1", f"Closing {brief['target']} to eastbound cars removes at least "
+            Hypothesis("H1", f"Closing {brief['target']} to {brief['closed_direction']} cars removes at least "
                        f"{metrics.CONSTRAINTS['G1']['min_drop_pct']}% of the car traffic on that segment.",
                        NOMINAL, "G1", True, []),
             Hypothesis("H2", f"Displaced through traffic spills onto {f1}, the street most "
@@ -121,9 +121,9 @@ class StateMachinePlanner:
             Hypothesis("H4", "Total delay in the area grows past the network-delay limit, i.e. "
                        "traffic does not simply evaporate.", NOMINAL, "C2", True, ["E1"]),
             Hypothesis("H5", "At high demand the closure tips the area into gridlock.",
-                       "quays:FC.M0.DH", "C3", True, ["E2"]),
+                       scenarios.exp_id("FC", "M0", "DH"), "C3", True, ["E2"]),
             Hypothesis("H6", f"A modal filter on {f1} removes its spillover without creating "
-                       "a new failure elsewhere.", "quays:FC.F1.DN", "verified", True, ["E3"]),
+                       "a new failure elsewhere.", scenarios.exp_id("FC", "F1", "DN"), "verified", True, ["E3"]),
         ]
 
     def decide(self, s):
@@ -142,7 +142,7 @@ class StateMachinePlanner:
                 return Decision("next_phase", next_phase=Phase.ROBUSTNESS,
                                 rationale=f"{s.verified_mitigation()} verified; check it under stress.")
             for code, why in self._rank_mitigations(s):
-                exp = f"quays:FC.{code}.DN"
+                exp = scenarios.exp_id("FC", code, "DN")
                 if exp in s.remaining:
                     hyps = ["H6"] if code == "F1" else []
                     return Decision("run", exp, hypothesis_ids=hyps, rationale=why)
@@ -152,9 +152,9 @@ class StateMachinePlanner:
         if s.phase == Phase.ROBUSTNESS:
             subject = s.verified_mitigation() or "M0"
             for demand, why in (("DH", "adverse corner: high demand"), ("DL", "favourable corner: low demand")):
-                exp = f"quays:FC.{subject}.{demand}"
+                exp = scenarios.exp_id("FC", subject, demand)
                 if exp in s.remaining:
-                    hyps = ["H5"] if exp == "quays:FC.M0.DH" else []
+                    hyps = ["H5"] if (subject, demand) == ("M0", "DH") else []
                     label = "the verified mitigation" if subject != "M0" else "the policy"
                     return Decision("run", exp, hypothesis_ids=hyps, rationale=f"Re-test {label} at the {why}.")
             return Decision("next_phase", next_phase=Phase.REPORT, rationale="Robustness checks done.")
@@ -254,7 +254,7 @@ class Agent:
     # --- experiments ----------------------------------------------------------------
 
     def _baseline(self, demand):
-        sid = f"quays:BASE.M0.{demand}"
+        sid = scenarios.exp_id("BASE", "M0", demand)
         if sid in self.state.results:
             return
         runs = self.runner.run(Scenario.parse(sid))
@@ -318,7 +318,7 @@ def network_brief():
     sites = scenarios.load_sites()
     return {
         "target": scenarios.target_label(),
-        "closed_direction": "eastbound",
+        "closed_direction": config.DIRECTION,
         "detour_ranking": [
             {"street": name, "detour_paths": n, "road_class": streets[name]["road_class"],
              "length_m": streets[name]["length_m"]}
@@ -330,7 +330,7 @@ def network_brief():
 
 
 def _load_evidence():
-    return json.loads((config.DATA / "evidence.json").read_text())["cards"]
+    return config.SCENARIO["evidence"]
 
 
 def _decision_dict(d):
@@ -353,7 +353,10 @@ def _format_event(e):
         what = d["experiment_id"] or d["next_phase"] or ""
         return f"{t} decision [{e['planner']}] {d['action']} {what} — {d['rationale']}"
     if kind == "simulation_finished":
-        extra = f" robust violations: {e['robust_violations'] or 'none'}" if "robust_violations" in e else ""
+        if "robust_violations" in e:
+            extra = f" robust violations: {e['robust_violations'] or 'none'}"
+        else:  # a baseline: show whether it's healthy (no jams) before anything is compared with it
+            extra = f" delay {e['delay_vehh']} veh·h, teleports {e['teleports']}"
         return f"{t} simulated {e['experiment_id']} ({e['label']}).{extra}"
     if kind == "violation_detected":
         v = e["violation"]

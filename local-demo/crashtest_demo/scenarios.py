@@ -1,10 +1,11 @@
 """The finite experiment catalogue (PLAN.md §7, heavily trimmed).
 
-Experiment IDs: ``quays:{policy}.{mitigation}.{demand}``, e.g. ``quays:FC.F1.DH``.
+Experiment IDs: ``{prefix}:{policy}.{mitigation}.{demand}``, e.g. ``quays:FC.F1.DH``; the prefix
+and everything street-specific come from scenario.json.
 
-- policy:     BASE (no change) | FC (one quay segment closed to private cars, one direction)
+- policy:     BASE (no change) | FC (the policy street segment closed to private cars, one direction)
 - mitigation: M0 (none) | F1 / F2 (modal filter on the 1st / 2nd ranked detour street) | F12 (both)
-- demand:     DL / DN / DH (x0.85 / x1.0 / x1.15 of the design-hour demand)
+- demand:     DL / DN / DH (scenario demand x low / x1.0 / x high)
 
 Mitigation sites are picked by a rule (shortest detours around the closure on the policy
 network), never by looking at simulation results.
@@ -21,13 +22,14 @@ import sumolib
 
 from . import config, network
 
-DEMAND_SCALE = {"DL": 0.85, "DN": 1.0, "DH": 1.15}
+_demand = config.SCENARIO["demand"]
+DEMAND_SCALE = {"DL": _demand["low"], "DN": 1.0, "DH": _demand["high"]}
 POLICIES = ("BASE", "FC")
 MITIGATIONS = ("M0", "F1", "F2", "F12")
+PREFIX = config.SCENARIO["experiment_prefix"]
 
-# Rue de Rivoli has been bus/taxi/bike-only since 2020 (PLAN.md §7). We only simulate
-# private cars, so it is closed to them in every scenario, including the baseline.
-BASE_RESTRICTED_STREETS = ("Rue de Rivoli",)
+# Streets closed to private cars in every scenario, baseline included (e.g. bus-only streets).
+BASE_RESTRICTED_STREETS = tuple(config.SCENARIO["always_closed_to_cars"])
 
 SITES_FILE = config.DATA / "sites.json"
 
@@ -40,7 +42,7 @@ class Scenario:
 
     @property
     def id(self):
-        return f"quays:{self.policy}.{self.mitigation}.{self.demand}"
+        return f"{PREFIX}:{self.policy}.{self.mitigation}.{self.demand}"
 
     @property
     def baseline(self):
@@ -55,6 +57,17 @@ class Scenario:
         return s
 
 
+def exp_id(policy, mitigation, demand):
+    return Scenario(policy, mitigation, demand).id
+
+
+def is_baseline(experiment_id):
+    return experiment_id.startswith(f"{PREFIX}:BASE.")
+
+
+NOMINAL = exp_id("FC", "M0", "DN")  # the mandatory first policy test
+
+
 def catalogue():
     """Every experiment the agent may run. Mitigations only make sense with the policy."""
     out = [Scenario("BASE", "M0", d) for d in DEMAND_SCALE]
@@ -65,9 +78,18 @@ def catalogue():
 # --- network patches -------------------------------------------------------------------
 
 
+def _street(name, data=None):
+    """A street from streets.json, with a clear error for names that aren't in the network."""
+    data = data or network.load_streets()
+    if name not in data:
+        raise SystemExit(f"Street {name!r} (scenario.json) is not in the network. "
+                         "List the names with: .venv/bin/python -m crashtest_demo streets")
+    return data[name]
+
+
 def _edges_of(streets):
     data = network.load_streets()
-    return [e for s in streets for e in data[s]["edges"]]
+    return [e for s in streets for e in _street(s, data)["edges"]]
 
 
 @functools.cache
@@ -87,10 +109,10 @@ def target_edges():
     """Edges of TARGET_STREET from its junction with TARGET_BETWEEN[0] to TARGET_BETWEEN[1]."""
     net = _base_net()
     streets = network.load_streets()
-    along = set(streets[config.TARGET_STREET]["edges"])
+    along = set(_street(config.TARGET_STREET, streets)["edges"])
 
     def junctions(cross):
-        return {n for e in streets[cross]["edges"] for n in (net.getEdge(e).getFromNode(), net.getEdge(e).getToNode())
+        return {n for e in _street(cross, streets)["edges"] for n in (net.getEdge(e).getFromNode(), net.getEdge(e).getToNode())
                 if any(x.getID() in along for x in n.getIncoming() + n.getOutgoing())}
 
     start, goal = (junctions(c) for c in config.TARGET_BETWEEN)
@@ -115,7 +137,7 @@ def target_label():
 
 
 def policy_label():
-    return f"{target_label()} closed to eastbound cars"
+    return f"{target_label()} closed to {config.DIRECTION} cars"
 
 
 def base_restricted_edges():
@@ -167,7 +189,7 @@ def _patched_net(closed):
 def screen_sites(top_n=2):
     """Rank residential streets by how many shortest detours around the closure use them.
 
-    For every fringe-to-fringe car trip whose shortest path uses the quays today, find its
+    For every fringe-to-fringe car trip whose shortest path uses the policy segment today, find its
     shortest path on the closure network and count the residential streets it newly
     crosses. The filter for each chosen street goes on its longest segment (both
     directions), so residents can still reach every address from one side.
@@ -196,6 +218,9 @@ def screen_sites(top_n=2):
                 if is_residential(name):
                     counts[name] += 1
     ranking = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))  # ties: alphabetical
+    if len(ranking) < top_n:
+        raise SystemExit(f"Only {len(ranking)} residential street(s) carry detours around the closure; the "
+                         f"F1/F2 mitigations need {top_n}. Pick a bigger bbox or another street in scenario.json.")
     sites = {}
     for i, (name, n) in enumerate(ranking[:top_n], start=1):
         longest = max(streets[name]["edges"], key=lambda e: closed.getEdge(e).getLength())

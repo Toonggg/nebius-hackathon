@@ -4,9 +4,11 @@ An AI agent crash-tests a traffic policy before it ships. **Nemotron** (Token Fa
 hypotheses and picks each next experiment; **SUMO** simulates it on the real OpenStreetMap network
 around Hôtel de Ville; Python checks every number and writes the report.
 
-**Policy tested:** close Quai de l'Hôtel de Ville to eastbound cars (Rue de Brosse → Pont Louis-Philippe).
+**Current scenario** ([scenario.json](scenario.json)): close Quai de l'Hôtel de Ville in Paris to eastbound
+cars (Rue de Brosse → Pont Louis-Philippe).
 
-**New here?** [GUIDE.md](GUIDE.md) explains how to read a run and what the result means.
+**New here?** [GUIDE.md](GUIDE.md) explains how to read a run. [human.md](human.md) shows how to change
+the scenario; [AGENTS.md](AGENTS.md) is the same for coding agents.
 
 ## Run it
 
@@ -16,7 +18,7 @@ python3 crashtest.py          # one full run, ~30–60 s
 ```
 
 Results land in `runs/latest/`: `report.md` (verdict, numbers, maps), `run.json` (event timeline), `maps/*.png`.
-Each run also refreshes the web app's recorded run, `lovable/public/demo/latest.json`.
+Nemotron runs also refresh the web app's recorded run, `lovable/public/demo/latest.json`.
 
 | Option | What it does |
 |---|---|
@@ -34,7 +36,7 @@ uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requi
 
 ## How a run works
 
-1. **Research:** 4 evidence cards (`data/evidence.json`; canned until Tavily is wired in).
+1. **Research:** evidence cards from `scenario.json` (canned until Tavily is wired in).
 2. **Hypotheses:** Nemotron 3 Ultra turns the evidence into testable claims.
 3. **Experiments:** Nemotron 3 Super picks the next one from a fixed 15-entry catalogue
    (policy × modal-filter mitigation × low/normal/high demand), within budget. Each runs in SUMO with 3 seeds.
@@ -53,6 +55,11 @@ The policy meets its goal (171 → 0 cars/h on the quay), but pushes traffic int
 Both modal filters and their combination remove that spillover but gridlock the area. **Verdict: fails.**
 This is a toy model: small area, uncalibrated demand, cars only.
 
+## Change the scenario
+
+Edit [scenario.json](scenario.json) (area, street, direction, demand, thresholds, evidence) and run
+`python3 crashtest.py`. It rebuilds the network for the new case automatically. Details: [human.md](human.md).
+
 ## Web app (Lovable)
 
 `lovable/` mirrors a Lovable project's root. Copy its contents into the project (same paths):
@@ -63,6 +70,7 @@ lovable/
   src/lib/crashtest.ts                      types + loadRecordedRun / replayRun / startLiveRun
   supabase/functions/crashtest-run/index.ts edge function: live run in a Token Factory Sandbox
   public/demo/latest.json                   a recorded real run (written by crashtest.py)
+  AGENTS.md                                 rules for coding agents working on the app
 ```
 
 1. Connect the Lovable project to GitHub, copy the files in, push. (Or attach them in Lovable chat.)
@@ -71,20 +79,23 @@ lovable/
 3. **Until Sandboxes is enabled**, "Run live" fails and the app shows the recorded run. Once it's enabled,
    run `python3 crashtest.py --sumo sandbox` once to build the sandbox image; then "Run live" works.
 
-To refresh the recorded run: `python3 crashtest.py`, then copy `public/demo/latest.json` again.
+The app takes every label from the recorded run, so a new scenario only needs a new `latest.json`:
+run `python3 crashtest.py`, then copy `public/demo/latest.json` into the Lovable project again.
 
 ## Files
 
 ```
+scenario.json         the case: area, policy, demand, thresholds, evidence cards
 crashtest.py          the one script: .env → Sandbox or local run → runs/latest/
 crashtest_demo/       engine: agent.py (loop + rules), nemotron.py (LLM planner), llm.py (Token Factory),
                       scenarios.py, runner.py (SUMO), metrics.py, report.py, plot.py
 lovable/              files for the Lovable web app (see above)
-data/                 OSM extract, SUMO network, streets, evidence cards
+data/                 OSM extract, SUMO network, streets, mitigation sites (built from scenario.json)
 GUIDE.md              how to read a run (start here)
+human.md / AGENTS.md  how to change the scenario or the demo (for people / for coding agents)
 WATCH.md              watch any experiment live in sumo-gui
 ```
 
-Dev commands: `python -m crashtest_demo {catalogue | sim ID | watch ID | run}` (from the venv).
+Dev commands: `python -m crashtest_demo {prepare | streets [NAME] | catalogue | sim ID | watch ID | run}` (from the venv).
 
 Data © OpenStreetMap contributors (ODbL). Simulation: [Eclipse SUMO](https://eclipse.dev/sumo/) 1.28.

@@ -4,7 +4,8 @@ The agent runs SUMO headless. `watch` replays any catalogue experiment in `sumo-
 the same network, trips, seed and SUMO options as the measured run (`runner.sim_args`). What
 you see is the run behind the numbers in `runs/latest/report.md`.
 
-All commands run from `local-demo/`.
+All commands run from `local-demo/`. The examples below use the Paris scenario (`scenario.json`):
+street names, edge IDs and experiment IDs change with the scenario.
 
 ## One-time setup (macOS)
 

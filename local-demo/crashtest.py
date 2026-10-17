@@ -7,8 +7,9 @@
     python3 crashtest.py --planner rules  # no LLM: rule-based planner
 
 Reads NEBIUS_API_KEY and NEBIUS_PROJECT_ID from .env next to this file. Writes runs/latest/
-(report.md, run.json, maps/*.png), refreshes the web app's recorded run
-(lovable/public/demo/latest.json) and prints the verdict.
+(report.md, run.json, maps/*.png), prints the verdict and, for Nemotron runs, refreshes the
+web app's recorded run (lovable/public/demo/latest.json). If scenario.json changed, data/ is
+rebuilt first.
 
 In a sandbox the run is one Sandboxes operation on a prepared image (Python + SUMO + this code),
 built once and tagged by a hash of the code and data. That one operation is also what the Lovable
@@ -36,7 +37,7 @@ ROOT = Path(__file__).resolve().parent
 REPLAY_FILE = ROOT / "lovable/public/demo/latest.json"  # the recorded run the web app replays
 SANDBOX_API = "https://api.tokenfactory.nebius.com/sandboxes/v1"
 BASE_IMAGE = "docker://docker.io/library/python:3.12-slim"
-IMAGE_FILES = ["requirements.txt", "crashtest_demo/*.py", "data/*"]  # what goes into the sandbox image
+IMAGE_FILES = ["requirements.txt", "scenario.json", "crashtest_demo/*.py", "data/*"]  # what goes into the sandbox image
 RUN_TIMEOUT_S = 1800
 LATEST_TAG = "crashtest-sumo:latest"
 
@@ -50,6 +51,7 @@ def main():
     p.add_argument("--rebuild-image", action="store_true", help="rebuild the sandbox image even if it exists")
     args = p.parse_args()
     load_env(ROOT / ".env")
+    ensure_prepared()
 
     where = args.sumo
     if where == "auto":
@@ -60,6 +62,25 @@ def main():
         run_in_sandbox(args)
     else:
         run_locally(args)
+
+
+# --- scenario ----------------------------------------------------------------------------
+
+
+def ensure_prepared():
+    """If scenario.json changed since data/ was built, rebuild data/ (needs the local venv)."""
+    scenario = json.loads((ROOT / "scenario.json").read_text())
+    strip = lambda v: {k: strip(x) for k, x in v.items() if not k.startswith("_")} if isinstance(v, dict) else v  # noqa: E731
+    want = {k: strip(scenario[k]) for k in ("bbox", "residential_road_types", "policy", "always_closed_to_cars")}
+    built_file = ROOT / "data/built_for.json"
+    if built_file.exists() and json.loads(built_file.read_text()) == want:
+        return
+    python = ROOT / ".venv/bin/python"
+    if not python.exists():
+        sys.exit("scenario.json changed: data/ must be rebuilt, which needs the local venv (see README).")
+    print("scenario.json changed: rebuilding data/ (network, streets, mitigation sites) ...", flush=True)
+    if subprocess.run([str(python), "-m", "crashtest_demo", "prepare"], cwd=ROOT).returncode:
+        sys.exit("prepare failed; fix scenario.json (see AGENTS.md) and try again.")
 
 
 # --- local -------------------------------------------------------------------------------
@@ -205,10 +226,14 @@ def save_bundle(bundle, out=ROOT / "runs" / "latest"):
     (out / "report.md").write_text(bundle["report_md"])
     for exp_id, png in bundle["maps_png_base64"].items():
         (out / bundle["run"]["maps"][exp_id]).write_bytes(base64.b64decode(png))
-    REPLAY_FILE.parent.mkdir(parents=True, exist_ok=True)
-    REPLAY_FILE.write_text(json.dumps(bundle, ensure_ascii=False))
-    print(f"\nVerdict: {bundle['run']['verdict']}\nReport:  {(out / 'report.md').relative_to(ROOT)}"
-          f"\nWeb app replay updated: {REPLAY_FILE.relative_to(ROOT)}")
+    print(f"\nVerdict: {bundle['run']['verdict']}\nReport:  {(out / 'report.md').relative_to(ROOT)}")
+    # The web app should show the real agent: only runs where Nemotron made the decisions replace it.
+    if bundle["run"]["events"][0].get("planner") == "nemotron":
+        REPLAY_FILE.parent.mkdir(parents=True, exist_ok=True)
+        REPLAY_FILE.write_text(json.dumps(bundle, ensure_ascii=False))
+        print(f"Web app replay updated: {REPLAY_FILE.relative_to(ROOT)}")
+    else:
+        print(f"Web app replay NOT updated (no Nemotron in this run): {REPLAY_FILE.relative_to(ROOT)}")
 
 
 def sandbox_access():
