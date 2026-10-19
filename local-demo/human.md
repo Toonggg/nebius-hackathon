@@ -18,8 +18,7 @@ scenario.json  ──►  crashtest.py  ──►  runs/latest/report.md        
 3. **Copy `lovable/public/demo/latest.json` into the Lovable project.** The web app reads every label
    from that file, so nothing else in the app changes.
 
-For live runs from the web app (once Sandboxes access exists), also run
-`python3 crashtest.py --sumo sandbox` once to rebuild the sandbox image.
+Step 2 runs in the cloud and also refreshes the sandbox image that the web app's "Run live" button uses.
 
 ## What's automatic and what isn't
 

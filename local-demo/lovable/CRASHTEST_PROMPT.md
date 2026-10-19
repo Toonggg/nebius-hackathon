@@ -25,7 +25,7 @@ Load the recorded run on page load, so the header can show the scenario before a
 2. **Two buttons:** "Run live crash test" (`startLiveRun`) and "Watch recorded run" (`replayRun` on
    `loadRecordedRun()`, speed 2). If a live run fails to start, show a small notice ("Live runs
    are unavailable right now, showing a recorded run") and fall back to the recorded run. Show a
-   running state with elapsed seconds; a live run takes about 1 minute.
+   running state with elapsed seconds; a live run takes about 1.5 minutes.
 3. **Agent timeline** (left/main column), built from the events as they arrive:
    - a step header per `phase_started` (Research, Hypotheses, Baseline, Policy test, Mitigation,
      Robustness, Report);

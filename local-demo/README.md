@@ -14,8 +14,12 @@ the scenario; [AGENTS.md](AGENTS.md) is the same for coding agents.
 
 ```bash
 cp .env.example .env          # then fill in NEBIUS_API_KEY and NEBIUS_PROJECT_ID
-python3 crashtest.py          # one full run, ~30–60 s
+python3 crashtest.py          # one full run in the cloud: SUMO in a Sandbox + Nemotron, ~1.5 min
+python3 cloud_minimal.py      # minimal cloud example: toy grid, SUMO + Nemotron judge, ~10 s
 ```
+
+`crashtest.py` builds its Sandboxes image the first time and again after code, data or scenario
+changes (a few minutes). `cloud_minimal.py` is a ~150-line, self-contained version of the same mechanism.
 
 Results land in `runs/latest/`: `report.md` (verdict, numbers, maps), `run.json` (event timeline), `maps/*.png`.
 Nemotron runs also refresh the web app's recorded run, `lovable/public/demo/latest.json`.
@@ -76,8 +80,8 @@ lovable/
 1. Connect the Lovable project to GitHub, copy the files in, push. (Or attach them in Lovable chat.)
 2. Paste `CRASHTEST_PROMPT.md` into Lovable chat. Add the secrets `NEBIUS_API_KEY` and
    `NEBIUS_PROJECT_ID` in Lovable Cloud when asked, and ask Lovable to deploy the `crashtest-run` function.
-3. **Until Sandboxes is enabled**, "Run live" fails and the app shows the recorded run. Once it's enabled,
-   run `python3 crashtest.py --sumo sandbox` once to build the sandbox image; then "Run live" works.
+3. "Run live" starts a run on the sandbox image tagged `crashtest-sumo:latest`. It already exists;
+   `python3 crashtest.py` refreshes it after changes. If a live run fails, the app shows the recorded run.
 
 The app takes every label from the recorded run, so a new scenario only needs a new `latest.json`:
 run `python3 crashtest.py`, then copy `public/demo/latest.json` into the Lovable project again.
@@ -87,6 +91,7 @@ run `python3 crashtest.py`, then copy `public/demo/latest.json` into the Lovable
 ```
 scenario.json         the case: area, policy, demand, thresholds, evidence cards
 crashtest.py          the one script: .env → Sandbox or local run → runs/latest/
+cloud_minimal.py      minimal self-contained cloud example (toy grid, SUMO + Nemotron judge)
 crashtest_demo/       engine: agent.py (loop + rules), nemotron.py (LLM planner), llm.py (Token Factory),
                       scenarios.py, runner.py (SUMO), metrics.py, report.py, plot.py
 lovable/              files for the Lovable web app (see above)

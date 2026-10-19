@@ -4,7 +4,7 @@
 
 **Verdict:** FAILS (spillover on Rue de Brosse, spillover on Rue François Miron, spillover on Rue de Fourcy). No mitigation in the catalogue was verified within budget.
 
-Planner: `nemotron` · SUMO: `local` · Budget: 6/6 experiments · Seeds per experiment: 3 · LLM: 9 calls to nvidia/Nemotron-3-Ultra-550b-a55b, nvidia/nemotron-3-super-120b-a12b, 25,998 tokens
+Planner: `nemotron` · SUMO: `sandbox` · Budget: 6/6 experiments · Seeds per experiment: 3 · LLM: 9 calls to nvidia/Nemotron-3-Ultra-550b-a55b, nvidia/nemotron-3-super-120b-a12b, 26,797 tokens
 
 ## What we found
 
@@ -45,6 +45,14 @@ Planner: `nemotron` · SUMO: `local` · Budget: 6/6 experiments · Seeds per exp
 
 ![quays:FC.F12.DN](maps/quays_FC_F12_DN.png)
 
+### `quays:FC.M0.DL`: Quai de l'Hôtel de Ville from Rue de Brosse to Pont Louis-Philippe closed to eastbound cars, low demand
+
+- Goal G1 (target segment −70%): met (149 → 0 cars/h)
+- Delay: 27 → 31 veh·h; teleports 0; unfinished trips 0
+- ⚠️ minor: **Rue François Miron**: 38 → 187 cars/h (+149, +298%; +140…+165 across seeds)
+- ⚠️ minor: **Rue de Brosse**: 12 → 161 cars/h (+149, +298%; +141…+164 across seeds)
+- ⚠️ minor: **Rue de Fourcy**: 42 → 190 cars/h (+148, +296%; +140…+161 across seeds)
+
 ### `quays:FC.M0.DH`: Quai de l'Hôtel de Ville from Rue de Brosse to Pont Louis-Philippe closed to eastbound cars, high demand
 
 - Goal G1 (target segment −70%): met (196 → 0 cars/h)
@@ -54,14 +62,6 @@ Planner: `nemotron` · SUMO: `local` · Budget: 6/6 experiments · Seeds per exp
 - ⚠️ major: **Rue François Miron**: 49 → 235 cars/h (+185, +360%; +175…+197 across seeds)
 - ⚠️ major: **Rue de Fourcy**: 54 → 228 cars/h (+174, +323%; +162…+181 across seeds)
 - ⚠️ major: **Network delay**: 38 → 123 veh·h (+223%)
-
-### `quays:FC.M0.DL`: Quai de l'Hôtel de Ville from Rue de Brosse to Pont Louis-Philippe closed to eastbound cars, low demand
-
-- Goal G1 (target segment −70%): met (149 → 0 cars/h)
-- Delay: 27 → 31 veh·h; teleports 0; unfinished trips 0
-- ⚠️ minor: **Rue François Miron**: 38 → 187 cars/h (+149, +298%; +140…+165 across seeds)
-- ⚠️ minor: **Rue de Brosse**: 12 → 161 cars/h (+149, +298%; +141…+164 across seeds)
-- ⚠️ minor: **Rue de Fourcy**: 42 → 190 cars/h (+148, +296%; +140…+161 across seeds)
 
 ## Mitigations tried
 
@@ -75,12 +75,12 @@ Planner: `nemotron` · SUMO: `local` · Budget: 6/6 experiments · Seeds per exp
 
 | ID | Hypothesis | Settled by | Evidence | Status |
 |---|---|---|---|---|
-| H1 | Closing the eastbound Quai de l'Hôtel de Ville reduces traffic on that segment by ≥70% (G1) under normal demand with no mitigation. | `quays:FC.M0.DN` | E1, E2 | supported |
-| H2 | Displaced eastbound traffic shifts onto the top-ranked detour street Rue François Miron (living_street/residential), raising its flow by >30% and >100 veh/h (C1). | `quays:FC.M0.DN` | E2, E4 | supported |
-| H3 | Displaced traffic also spills onto the second-ranked detour Rue de Brosse (living_street), triggering C1 there. | `quays:FC.M0.DN` | E2, E4 | supported |
-| H4 | Network-wide delay rises by >10% and >20 veh·h (C2) because the parallel detour streets are residential/living streets with limited capacity (E4) and cannot absorb displaced flow without congestion. | `quays:FC.M0.DN` | E2, E4 | refuted |
-| H5 | A modal filter on the first-ranked detour (Rue François Miron, mitigation F1) eliminates the C1 spillover on that street without creating new C1/C2/C3 violations (verified). | `quays:FC.F1.DN` | E3 | supported |
-| H6 | A modal filter on the second-ranked detour (Rue de Brosse, mitigation F2) eliminates the C1 spillover on that street without creating new C1/C2/C3 violations (verified). | `quays:FC.F2.DN` | E3 | supported |
+| H1 | Closing the eastbound Quai de l'Hôtel de Ville will cut traffic on that segment by ≥70% under normal demand. | `quays:FC.M0.DN` | E2 | supported |
+| H2 | Displaced eastbound traffic will spill onto the top-ranked detour Rue François Miron (a living_street/residential) exceeding both the 30% and 100 veh/h thresholds. | `quays:FC.M0.DN` | E2, E4 | supported |
+| H3 | The second-ranked detour Rue de Brosse (living_street) will also see a residential spillover breach (>30% and >100 veh/h). | `quays:FC.M0.DN` | E2, E4 | supported |
+| H4 | Network-wide delay will rise by >10% and >20 veh·h as traffic redistributes onto narrower parallel streets. | `quays:FC.M0.DN` | E2 | refuted |
+| H5 | A modal filter on Rue François Miron (F1) will eliminate its C1 breach without triggering new C1/C2/C3 violations elsewhere at DN demand. | `quays:FC.F1.DN` | E3 | refuted |
+| H6 | Adding a second modal filter on Rue de Brosse (F12) will resolve the remaining residential spillover without creating fresh failures at DN demand. | `quays:FC.F12.DN` | E3 | refuted |
 
 ## Evidence (canned cards; no live Tavily search yet)
 

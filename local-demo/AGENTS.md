@@ -25,7 +25,8 @@ experiments, SUMO simulates them, Python judges the results and writes a report.
 
 ```bash
 uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.txt
-python3 crashtest.py                       # full run: Nemotron + SUMO (~30-60 s, ~26k LLM tokens)
+python3 crashtest.py                       # full run: Nemotron + SUMO, in a Sandbox (~1.5 min, ~26k LLM tokens)
+python3 cloud_minimal.py                   # minimal self-contained cloud example (toy grid)
 python3 crashtest.py --planner rules       # same without the LLM: free, deterministic; use while iterating
 .venv/bin/python -m crashtest_demo prepare           # rebuild data/ for scenario.json (crashtest.py does this automatically)
 .venv/bin/python -m crashtest_demo streets           # longest streets in the network (name, class)
@@ -72,8 +73,9 @@ Steps:
      `runs/latest/report.md`.
    - `WATCH.md`: its examples name Paris streets and experiments. Update them or mark them as Paris examples.
    - `grep -ri "<old city>\|<old street>" --include=*.md .` should then find nothing stale.
-6. Live web runs: once Sandboxes access exists, run `python3 crashtest.py --sumo sandbox`. It rebuilds the
-   sandbox image (code/data/scenario changed) and moves the `crashtest-sumo:latest` tag the web app uses.
+6. Live web runs: step 4 (`python3 crashtest.py`, which runs in the sandbox by default) rebuilt the sandbox
+   image because code/data/scenario changed, and moved the `crashtest-sumo:latest` tag the web app uses.
+   Confirm the step 4 output says `SUMO runs in a Token Factory Sandbox`; if not, run `--sumo sandbox` once.
 7. Tell the human to copy `lovable/public/demo/latest.json` into the Lovable project. It's the only
    web-app file that changes with the scenario.
 
@@ -99,7 +101,8 @@ Only when asked to go beyond a new scenario. Where things live:
 | Agent loop / phases | `agent.py` (`Phase`, `TRANSITIONS`, `Agent.run`); keep Python as the judge of every verdict |
 | LLM models / prompts | `llm.py` (`MODEL_*`, env overrides), `nemotron.py` |
 | Report / maps | `report.py`, `plot.py` |
-| Run orchestration, sandbox image | `crashtest.py` (`IMAGE_FILES`: everything the sandbox needs) |
+| Run orchestration, sandbox image | `crashtest.py`: `IMAGE_FILES` (what's uploaded), `IMAGE_SETUP` (system libs + pip). SUMO needs `libexpat1 libatomic1 libx11-6 libxext6 libxrender1 libgl1` even headless. |
+| Minimal cloud example | `cloud_minimal.py` (self-contained; doesn't use the engine) |
 
 Contracts to keep in sync:
 - **Bundle** (what a run returns): `crashtest_demo/__main__.py` writes `{scenario, run, report_md,

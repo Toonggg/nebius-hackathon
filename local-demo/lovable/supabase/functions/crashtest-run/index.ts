@@ -9,9 +9,8 @@
 // bundle: the full result once status is SUCCESS (see src/lib/crashtest.ts for the types)
 //
 // Secrets (Lovable Cloud → Secrets): NEBIUS_API_KEY, NEBIUS_PROJECT_ID.
-// The sandbox image (crashtest-sumo:latest) is built by running `python3 crashtest.py --sumo sandbox`
-// once in the repo's local-demo/ folder. Until the project has Sandboxes access, starting a run
-// returns an error and the app should show the recorded run instead.
+// The sandbox image (crashtest-sumo:latest) is built and refreshed by `python3 crashtest.py` in the
+// repo's local-demo/ folder. If starting a run fails (access, quota), the app shows the recorded run.
 // Anyone who can call this function can start runs that spend Token Factory credits.
 
 const API = "https://api.tokenfactory.nebius.com/sandboxes/v1";

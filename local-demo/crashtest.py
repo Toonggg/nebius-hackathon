@@ -39,6 +39,14 @@ SANDBOX_API = "https://api.tokenfactory.nebius.com/sandboxes/v1"
 BASE_IMAGE = "docker://docker.io/library/python:3.12-slim"
 IMAGE_FILES = ["requirements.txt", "scenario.json", "crashtest_demo/*.py", "data/*"]  # what goes into the sandbox image
 RUN_TIMEOUT_S = 1800
+# Image recipe. The SUMO wheel's binaries need a few system libraries the slim image lacks
+# (X11/GL even for headless sumo). Part of the image fingerprint, so editing it forces a rebuild.
+IMAGE_SETUP = (
+    "set -e; apt-get update -qq && apt-get install -y -qq --no-install-recommends "
+    "libexpat1 libatomic1 libx11-6 libxext6 libxrender1 libgl1 >/dev/null && rm -rf /var/lib/apt/lists/*; "
+    "mkdir -p /app && tar -xzf /tmp/src.tgz -C /app && rm /tmp/src.tgz && cd /app && "
+    "pip install --no-cache-dir -q --root-user-action=ignore -r requirements.txt && python -m crashtest_demo warm"
+)
 LATEST_TAG = "crashtest-sumo:latest"
 
 
@@ -134,10 +142,8 @@ def ensure_image(force=False):
     if not base.get("result_image_uuid"):
         sys.exit(f"Importing {BASE_IMAGE} returned no image: {json.dumps(base)[:500]}")
     upload = api("POST", "/files", raw=archive)
-    setup = ("set -e; mkdir -p /app && tar -xzf /tmp/src.tgz -C /app && rm /tmp/src.tgz && cd /app && "
-             "pip install --no-cache-dir -q -r requirements.txt && python -m crashtest_demo warm")
     op = api("POST", "/instances", {
-        "image": base["result_image_uuid"], "command": setup, "shell": True, "disposable": False,
+        "image": base["result_image_uuid"], "command": IMAGE_SETUP, "shell": True, "disposable": False,
         "timeout": 1200, "files": {"/tmp/src.tgz": {"uuid": upload["uuid"], "mode": "0644"}},
     })
     built = wait(op["uuid"], stream_stderr=True)
@@ -158,7 +164,8 @@ def source_archive():
             info.size, info.mode, info.mtime = f.stat().st_size, 0o644, 0
             with f.open("rb") as fh:
                 tar.addfile(info, fh)
-    digest = hashlib.sha256(b"".join(f.relative_to(ROOT).as_posix().encode() + f.read_bytes() for f in files))
+    digest = hashlib.sha256(IMAGE_SETUP.encode() + BASE_IMAGE.encode() +
+                            b"".join(f.relative_to(ROOT).as_posix().encode() + f.read_bytes() for f in files))
     return buf.getvalue(), digest.hexdigest()
 
 

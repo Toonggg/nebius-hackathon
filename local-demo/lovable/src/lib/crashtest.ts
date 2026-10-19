@@ -4,7 +4,7 @@
 //   Always works; use it for "Watch a recorded run" and as the fallback when live runs fail.
 // - replayRun(): plays a recorded run's events back with their original timing.
 // - startLiveRun(): starts a fresh run in a Token Factory Sandbox via the "crashtest-run" edge
-//   function and streams its events. Fails until the Nebius project has Sandboxes access.
+//   function and streams its events. Can fail (quota, outage): fall back to the recorded run.
 //
 // Both paths produce the same Bundle, so the UI renders them identically. Everything about the
 // case (city, street, policy wording, evidence) is in bundle.scenario: never hard-code it in the UI.
@@ -147,7 +147,7 @@ export async function replayRun(
   return bundle;
 }
 
-/** Fresh run in a Token Factory Sandbox. Throws if it can't start (e.g. no Sandboxes access yet). */
+/** Fresh run in a Token Factory Sandbox (~1.5 min). Throws if it can't start or fails. */
 export async function startLiveRun(
   onEvents: (events: RunEvent[]) => void,
   { signal }: { signal?: AbortSignal } = {},
