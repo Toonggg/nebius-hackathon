@@ -26,6 +26,7 @@ experiments, SUMO simulates them, Python judges the results and writes a report.
 ```bash
 uv venv --python 3.12 .venv && uv pip install --python .venv/bin/python -r requirements.txt
 python3 crashtest.py                       # full run: Nemotron + SUMO, in a Sandbox (~1.5 min, ~26k LLM tokens)
+python3 cloud_crashtest.py                 # full run, cloud only: prepare + agent in the sandbox, no local venv needed
 python3 cloud_minimal.py                   # minimal self-contained cloud example (toy grid)
 python3 crashtest.py --planner rules       # same without the LLM: free, deterministic; use while iterating
 .venv/bin/python -m crashtest_demo prepare           # rebuild data/ for scenario.json (crashtest.py does this automatically)
@@ -58,7 +59,8 @@ Edit only `scenario.json`, then verify. Fields (`_help` keys explain each; they 
 Steps:
 
 1. If the area changes: set `bbox`, run `prepare`, then use `streets` to pick the policy street and
-   its `from` / `to` cross streets.
+   its `from` / `to` cross streets. (No local venv? `python3 cloud_crashtest.py --planner rules`
+   rebuilds `data/` in the cloud; then read street names from `data/streets.json`.)
 2. Set the remaining fields. Run `python3 crashtest.py --planner rules` (no LLM cost).
 3. **Verify** (all must hold; otherwise fix and rerun):
    - `prepare` printed `Policy target: ... -> edges [...]` and two mitigation sites F1/F2.
@@ -102,6 +104,7 @@ Only when asked to go beyond a new scenario. Where things live:
 | LLM models / prompts | `llm.py` (`MODEL_*`, env overrides), `nemotron.py` |
 | Report / maps | `report.py`, `plot.py` |
 | Run orchestration, sandbox image | `crashtest.py`: `IMAGE_FILES` (what's uploaded), `IMAGE_SETUP` (system libs + pip). SUMO needs `libexpat1 libatomic1 libx11-6 libxext6 libxrender1 libgl1` even headless. |
+| Cloud-only runner | `cloud_crashtest.py`: runtime image (`SETUP` + `requirements.txt`), per-run source upload, `JOB` (prepare + run in the sandbox, returns rebuilt `data/`). Reuses helpers from `crashtest.py`. |
 | Minimal cloud example | `cloud_minimal.py` (self-contained; doesn't use the engine) |
 
 Contracts to keep in sync:

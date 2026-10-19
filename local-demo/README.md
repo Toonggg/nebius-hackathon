@@ -15,11 +15,15 @@ the scenario; [AGENTS.md](AGENTS.md) is the same for coding agents.
 ```bash
 cp .env.example .env          # then fill in NEBIUS_API_KEY and NEBIUS_PROJECT_ID
 python3 crashtest.py          # one full run in the cloud: SUMO in a Sandbox + Nemotron, ~1.5 min
+python3 cloud_crashtest.py    # the same, cloud only: no local SUMO needed, even after editing scenario.json
 python3 cloud_minimal.py      # minimal cloud example: toy grid, SUMO + Nemotron judge, ~10 s
 ```
 
 `crashtest.py` builds its Sandboxes image the first time and again after code, data or scenario
-changes (a few minutes). `cloud_minimal.py` is a ~150-line, self-contained version of the same mechanism.
+changes (a few minutes); that image is what the web app's "Run live" uses. `cloud_crashtest.py` keeps
+only the SUMO runtime in the image and uploads code + `scenario.json` with each run, so it also rebuilds
+the road network in the cloud and copies it back to `data/`. `cloud_minimal.py` is a ~150-line,
+self-contained version of the mechanism.
 
 Results land in `runs/latest/`: `report.md` (verdict, numbers, maps), `run.json` (event timeline), `maps/*.png`.
 Nemotron runs also refresh the web app's recorded run, `lovable/public/demo/latest.json`.
@@ -91,6 +95,7 @@ run `python3 crashtest.py`, then copy `public/demo/latest.json` into the Lovable
 ```
 scenario.json         the case: area, policy, demand, thresholds, evidence cards
 crashtest.py          the one script: .env → Sandbox or local run → runs/latest/
+cloud_crashtest.py    cloud-only full run (code + scenario uploaded per run; no local SUMO)
 cloud_minimal.py      minimal self-contained cloud example (toy grid, SUMO + Nemotron judge)
 crashtest_demo/       engine: agent.py (loop + rules), nemotron.py (LLM planner), llm.py (Token Factory),
                       scenarios.py, runner.py (SUMO), metrics.py, report.py, plot.py

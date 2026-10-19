@@ -19,6 +19,8 @@ scenario.json  ──►  crashtest.py  ──►  runs/latest/report.md        
    from that file, so nothing else in the app changes.
 
 Step 2 runs in the cloud and also refreshes the sandbox image that the web app's "Run live" button uses.
+No local SUMO installed? Run `python3 cloud_crashtest.py` first: it rebuilds the road network in the cloud
+and copies it back. Then `python3 crashtest.py` needs nothing local either.
 
 ## What's automatic and what isn't
 
