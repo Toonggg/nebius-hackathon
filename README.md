@@ -87,7 +87,7 @@ rebuilt automatically. [human.md](local-demo/human.md) explains this for people,
 | What | Where |
 |---|---|
 | **Nemotron 3 Ultra** (`nvidia/Nemotron-3-Ultra-550b-a55b`) | Hypotheses: one reasoning-heavy call per run (`crashtest_demo/nemotron.py`) |
-| **Nemotron 3 Super** (`nvidia/nemotron-3-super-120b-a12b`) | Every next-experiment decision, ~8 fast calls per run, with structured JSON output; also the judge in `cloud_minimal.py` |
+| **Nemotron 3 Super** (`nvidia/nemotron-3-super-120b-a12b`) ⚠️ [deprecated 9 Nov 2026](#model-deprecation-nemotron-3-super-9-november-2026) | Every next-experiment decision, ~8 fast calls per run, with structured JSON output; also the judge in `cloud_minimal.py` |
 | **Token Factory inference** | OpenAI-compatible API, called with the standard library only (`crashtest_demo/llm.py`) |
 | **Token Factory Sandboxes** | SUMO and the whole agent loop run in an isolated microVM per run. The image is built once and tagged by a content hash; each run uploads the code and scenario. The web app's *Live agent* mode starts the same sandbox run through a Lovable Cloud edge function |
 
@@ -98,6 +98,31 @@ rebuilt automatically. [human.md](local-demo/human.md) explains this for people,
   sandbox and a whole run is a single API call.
 - **Plug-in models.** The OpenAI-compatible API and JSON-schema output let Nemotron replace the
   rule-based planner without changing the agent loop.
+
+## Model deprecation: Nemotron 3 Super, 9 November 2026
+
+> **Known at submission (30 October 2026).** We submitted aware that Nemotron 3 Super is being retired,
+> and chose to submit with it deliberately. It is the model behind every recorded and tested run, and
+> its replacement had not been tested with SimTraffick by the deadline. The impact and migration plan
+> below were written at submission time.
+
+Token Factory [removes `nvidia/nemotron-3-super-120b-a12b` from Serverless on 9 November 2026](https://docs.tokenfactory.nebius.com/model-deprecations-november-2026#model-deprecations-november-2026),
+before judging (1–15 December). The recommended replacement is `nvidia/Nemotron-3.5-Super-VL`. Nemotron 3 Ultra
+is not affected. We will migrate after submission.
+
+What happens after 9 November until we migrate:
+
+| Part | Effect |
+|---|---|
+| Web app, *Recorded sample* | None: it replays a real run recorded with Nemotron 3 Super |
+| Web app, *Live agent*; `crashtest.py`; `cloud_crashtest.py` | Runs still complete. Nemotron 3 Ultra still writes the hypotheses, but each next-step decision falls back to the rule-based planner, marked "fallback" in the timeline and report. (Checked by simulating the removal: Token Factory returns `404 model_not_found`, and the run finished with the same verdict.) |
+| `cloud_minimal.py` | Fails at the judge call (the model ID is hard-coded) |
+
+**Migration:** the decision model is one setting. To switch the scripts, add
+`MODEL_MAIN=nvidia/Nemotron-3.5-Super-VL` to `local-demo/.env`. To switch the web app's live mode, change
+the default in `local-demo/crashtest_demo/llm.py`, then run `python3 crashtest.py` once to rebuild the
+sandbox image. For `cloud_minimal.py`, edit the model ID. We haven't yet tested the replacement with our
+JSON-schema prompts; we'll re-run and compare decisions before switching.
 
 ## Repository
 
